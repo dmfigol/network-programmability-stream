@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
+import asyncio
 from copy import deepcopy
 from pprint import pprint
 
-import netmiko
+
+import netdev
 import yaml
 
 SITE_NAME = 'SJ-HQ'
@@ -54,37 +56,38 @@ def form_connection_params_from_yaml(parsed_yaml, site='all'):
         yield host_dict
 
 
-def collect_outputs(devices, commands):
+async def collect_outputs(device_params, commands):
     """
     Collects commands from the dictionary of devices
 
     Args:
-        devices (dict): dictionary, where key is the hostname, value is netmiko connection dictionary
+        device_params (dict): dictionary, where key is the hostname, value is netmiko connection dictionary
         commands (list): list of commands to be executed on every device
 
     Returns:
         dict: key is the hostname, value is string with all outputs
     """
-    for device in devices:
-        hostname = device.pop('hostname')
-        connection = netmiko.ConnectHandler(**device)
+    hostname = device_params.pop('hostname')
+    async with netdev.create(**device_params) as connection:
         device_result = ['{0} {1} {0}'.format('=' * 20, hostname)]
 
         for command in commands:
-            command_result = connection.send_command(command)
+            command_result = await connection.send_command(command)
             device_result.append('{0} {1} {0}'.format('=' * 20, command))
             device_result.append(command_result)
 
         device_result_string = '\n\n'.join(device_result)
-        connection.close()
-        yield device_result_string
+        return device_result_string
 
 
 def main():
     parsed_yaml = read_yaml()
-    connection_params = form_connection_params_from_yaml(parsed_yaml, site=SITE_NAME)
-    for device_result in collect_outputs(connection_params, COMMANDS_LIST):
-        print(device_result)
+    loop = asyncio.get_event_loop()
+    tasks = [loop.create_task(collect_outputs(device, COMMANDS_LIST))
+             for device in form_connection_params_from_yaml(parsed_yaml, site=SITE_NAME)]
+    loop.run_until_complete(asyncio.wait(tasks))
+    for task in tasks:
+        print(task.result())
 
 
 if __name__ == '__main__':
