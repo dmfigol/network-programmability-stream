@@ -76,7 +76,7 @@ def collect_outputs(devices, commands):
             device_result.append(command_result)
 
         device_result_string = '\n\n'.join(device_result)
-        connection.close()
+        connection.disconnect()
         yield device_result_string
 
 
