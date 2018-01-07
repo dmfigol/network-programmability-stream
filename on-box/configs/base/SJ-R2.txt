@@ -1,0 +1,39 @@
+en
+conf t
+hostname SJ-R2
+vrf definition MGMT
+ !
+ address-family ipv4
+ exit-address-family
+
+ip name-server vrf MGMT 192.168.122.1
+ip domain name lab.com
+
+username admin privilege 15 password 0 admin
+
+interface GigabitEthernet1
+ vrf forwarding MGMT
+ ip address 192.168.122.12 255.255.255.0
+!
+interface GigabitEthernet2
+ no ip address
+!
+interface GigabitEthernet3
+ no ip address
+!
+interface GigabitEthernet4
+ no ip address
+!  
+ip route vrf MGMT 0.0.0.0 0.0.0.0 192.168.122.1
+!
+ip ssh version 2
+!
+line con 0
+ stopbits 1
+line vty 0 4
+ privilege level 15
+ login local
+ transport input all
+!
+crypto key generate rsa mod 2048
+end
