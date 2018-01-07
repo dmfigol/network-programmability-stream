@@ -16,6 +16,15 @@ COMMANDS_LIST = [
 
 
 def read_yaml(path='inventory.yml'):
+    """
+    Reads inventory yaml file and return dictionary with parsed values
+
+    Args:
+        path (str): path to inventory YAML
+
+    Returns:
+        dict: prased inventory YAML values
+    """
     with open(path) as f:
         yaml_content = yaml.load(f.read())
     return yaml_content
@@ -33,23 +42,21 @@ def form_connection_params_from_yaml(parsed_yaml, site='all'):
         dict: key is hostname, value is dictionary containing netmiko connection parameters for the host
     """
     parsed_yaml = deepcopy(parsed_yaml)
-    result = {}
     global_params = parsed_yaml['all']['vars']
     site_dict = parsed_yaml['all']['groups'].get(site)
     if site_dict is None:
         raise KeyError('Site {} is not specified in inventory YAML file'.format(site))
+
     for host in site_dict['hosts']:
         host_dict = {}
-        # hostname = host.pop('hostname')
         host_dict.update(global_params)
         host_dict.update(host)
         yield host_dict
-        # result[hostname] = host_dict
-    # return result
 
 
 def collect_outputs(devices, commands):
     """
+    Collects commands from the dictionary of devices
 
     Args:
         devices (dict): dictionary, where key is the hostname, value is netmiko connection dictionary
@@ -61,11 +68,15 @@ def collect_outputs(devices, commands):
     for device in devices:
         hostname = device.pop('hostname')
         connection = netmiko.ConnectHandler(**device)
-        device_result = ['=' * 20 + hostname + '=' * 20]
+        device_result = ['{0} {1} {0}'.format('=' * 20, hostname)]
+
         for command in commands:
             command_result = connection.send_command(command)
-            device_result.append('=' * 20 + command_result + '=' * 20)
+            device_result.append('{0} {1} {0}'.format('=' * 20, command))
+            device_result.append(command_result)
+
         device_result_string = '\n\n'.join(device_result)
+        connection.close()
         yield device_result_string
 
 
@@ -78,3 +89,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
