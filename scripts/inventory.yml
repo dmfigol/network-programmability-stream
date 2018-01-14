@@ -1,0 +1,40 @@
+all:
+  vars:
+    username: admin
+    password: admin
+  sites:
+    - name: sjc
+      hosts:
+        - hostname: SJ-R1
+          host: 192.168.122.11
+          device_type_netmiko: cisco_ios
+          device_type: csr1000v
+          device_role: core
+        - hostname: SJ-R2
+          host: 192.168.122.12
+          device_type_netmiko: cisco_ios
+          device_type: csr1000v
+          device_role: core
+        - hostname: SJ-SW1
+          host: 192.168.122.13
+          device_type_netmiko: cisco_ios
+          device_type: iosv-l2
+          device_role: access
+        - hostname: SJ-SW2
+          host: 192.168.122.14
+          device_type_netmiko: cisco_ios
+          device_type: iosv-l2
+          device_role: access
+        - hostname: SJ-HUB1
+          host: 192.168.122.15
+          device_type_netmiko: cisco_ios
+          device_type: csr1000v
+          device_role: edge
+    - name: bru
+      hosts:
+        - hostname: BRU-EDGE
+          host: 192.168.122.20
+          device_type_netmiko: cisco_ios
+          device_type: csr1000v
+          device_role: edge
+      
