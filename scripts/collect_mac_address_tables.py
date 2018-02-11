@@ -21,7 +21,7 @@ SHOW_VERSION_REGEXP_LIST = [
 ]
 
 SHOW_MAC_ADDR_TABLE_RE = re.compile(
-    r'^\s*(?P<vlan_number>\d+)\s+(?P<mac_address>\S+)\s+(?P<type>\S+)\s+(?P<interface_name>\S+)'
+    r'^\s*(?P<vlan_number>\d+)\s+(?P<mac_address>\S+)\s+(?P<type>\S+)\s+(?P<interface_name>\S+)', re.M
 )
 
 
@@ -43,10 +43,11 @@ def parse_show_version(cli_output):
 
 
 def parse_show_mac_address_table(cli_output):
-    mac_address_table = [match.groupdict()
-                         for match in SHOW_MAC_ADDR_TABLE_RE.finditer(cli_output)]
+    mac_address_table = [
+        match.groupdict()
+        for match in SHOW_MAC_ADDR_TABLE_RE.finditer(cli_output)
+    ]
     mac_address_table.sort(key=lambda x: x['interface_name'])
-
     result_str = '\n'.join(
         '{vlan_number:>4}{mac_address:>18}{type:>11}{interface_name:>10}'.format(**mac_address_entry)
         for mac_address_entry in mac_address_table
@@ -55,7 +56,6 @@ def parse_show_mac_address_table(cli_output):
         'mac_address_table_list': mac_address_table,
         'mac_address_table': result_str
     }
-
     return result
 
 
@@ -75,7 +75,7 @@ def get_mac_address_table(host):
 
 def main():
     ip_list = get_switches_ip_addresses()
-    
+
     for ip in ip_list:
         mac_address_table = get_mac_address_table(ip)
         print(mac_address_table)
