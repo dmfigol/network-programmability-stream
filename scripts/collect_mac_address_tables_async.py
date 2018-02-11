@@ -28,7 +28,7 @@ SHOW_MAC_ADDR_TABLE_RE = re.compile(
 )
 
 CDP_NEIGHBOR_RE = re.compile(
-    r'^Device ID: (?P<remote_hostname>\S+).+?^Interface: (?P<local_interface>\S+),\s+Port ID (outgoing port): (?P<remote_hostname>\S+)',
+    r'^Device ID: (?P<remote_hostname>\S+).+?^Interface: (?P<local_interface>\S+),\s+Port ID (outgoing port): (?P<remote_interface>\S+)',
     re.M | re.S
 )
 
