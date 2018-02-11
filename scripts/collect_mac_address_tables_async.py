@@ -28,7 +28,7 @@ SHOW_MAC_ADDR_TABLE_RE = re.compile(
 )
 
 CDP_NEIGHBOR_RE = re.compile(
-    r'^Device ID: (?P<remote_hostname>\S+).+?^Interface: (?P<local_interface>\S+),\s+Port ID (outgoing port): (?P<remote_interface>\S+)',
+    r'^Device ID: (?P<remote_hostname>\S+).+?^Interface: (?P<local_interface>\S+),\s+Port ID \(outgoing port\): (?P<remote_interface>\S+)',
     re.M | re.S
 )
 
@@ -39,6 +39,7 @@ LLDP_NEIGHBOR_RE = re.compile(
 
 NEIGHBOR_SPLIT_RE = re.compile(r'\n\n-{6,}\n')
 INTERFACE_NAME_RE = re.compile(r'(?P<interface_type>[a-zA-Z\-]+)(?P<interface_number>[\d/.\-]+)')
+
 
 def read_inventory_yaml(file_name=INVENTORY_FILE):
     with open(file_name) as f:
@@ -71,7 +72,7 @@ def parse_show_mac_address_table(cli_output, neighbors):
         interface_neighbors = neighbors.get(interface_name)
         if interface_neighbors is not None:
             return ', '.join('{remote_hostname} {remote_interface} {protocol}'.format(**interface_neighbor)
-                             for interface_neighbor in interface_neighbors  )
+                             for interface_neighbor in interface_neighbors)
         return '-'
 
     mac_address_table = [
