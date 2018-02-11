@@ -70,7 +70,8 @@ def parse_show_mac_address_table(cli_output, neighbors):
     def get_interface_neighbors_string(interface_name):
         interface_neighbors = neighbors.get(interface_name)
         if interface_neighbors is not None:
-            return ', '.join('{remote_hostname} {remote_interface} {protocol}'.format(**interface_neighbors))
+            return ', '.join('{remote_hostname} {remote_interface} {protocol}'.format(**interface_neighbor)
+                             for interface_neighbor in interface_neighbors  )
         return '-'
 
     mac_address_table = [
