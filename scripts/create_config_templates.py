@@ -149,7 +149,7 @@ async def configure_device_from_netbox(connection_params):
     hostname = connection_params.pop('hostname')
     async with netdev.create(**connection_params) as device_conn:
         device_config = create_device_config(hostname)
-        device_config_list = device_config.split()
+        device_config_list = device_config.split('\n')
         device_response = await device_conn.send_config_set(device_config_list)
         return device_response
 
@@ -169,8 +169,8 @@ def main():
 
     loop.run_until_complete(asyncio.wait(tasks))
 
-    for task in tasks:
-        print(task.result())
+    # for task in tasks:
+    #     print(task.result())
 
     print('It took {} seconds to run'.format(time.time() - start_time))
 
