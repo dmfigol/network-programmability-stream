@@ -1,0 +1,6 @@
+interface {{ interface_name }}
+ description {{ interface_description }}
+ switchport mode access
+ switchport access vlan {{ vlan_number }}
+ {{ 'no ' if enabled }}shutdown
+!
