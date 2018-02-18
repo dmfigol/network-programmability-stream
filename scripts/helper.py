@@ -57,9 +57,12 @@ def form_connection_params_from_yaml(parsed_yaml, site_name=None):
                     host['device_type'] = host.pop('device_type_netmiko')
                 host_dict.update(global_params)
                 host_dict.update(host)
+                host_dict.pop('device_role')
 
                 found = True
+
                 yield host_dict
+
     if site_name is not None and not found:
         raise KeyError('Site {} is not specified in inventory YAML file'.format(site_name))
 
