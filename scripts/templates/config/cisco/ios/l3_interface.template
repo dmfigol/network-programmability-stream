@@ -1,0 +1,6 @@
+interface {{ interface_name }}
+ description {{ description }}
+ {{ 'no switchport\n ' if switch_l3_interface -}}
+ ip address {{ ip_address.ip }} {{ ip_address.netmask }}
+ {{ 'no ' if enabled }}shutdown
+!

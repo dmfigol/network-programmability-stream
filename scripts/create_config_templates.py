@@ -1,13 +1,19 @@
+import asyncio
 import os
 import re
 import json
+import sys
+import time
 from ipaddress import IPv4Interface
 
 import requests
+import decouple
+import jinja2
+import netdev
 
-from helper import read_yaml, form_device_params_from_yaml
+from helper import read_yaml, form_connection_params_from_yaml
 
-NETBOX_API_ROOT = 'http://netbox:32774/api'
+NETBOX_API_ROOT = 'http://netbox:32768/api'
 NETBOX_DEVICES_ENDPOINT = '/dcim/devices/'
 NETBOX_INTERFACES_ENDPOINT = '/dcim/interfaces/'
 NETBOX_SITES_ENDPOINT = '/dcim/sites/'
@@ -27,13 +33,15 @@ SITES = [
     }
 ]
 
+TEMPLATES = jinja2.Environment(loader=jinja2.FileSystemLoader('templates'))
+
 
 class NetboxAPITokenNotFound(Exception):
     pass
 
 
 def form_headers():
-    api_token = os.environ.get('NETBOX_API_TOKEN')
+    api_token = decouple.config('NETBOX_API_TOKEN')
     if api_token is None:
         raise NetboxAPITokenNotFound('NETBOX_API_TOKEN was not found in environmental variables')
 
@@ -51,7 +59,7 @@ def create_vlan(vlan_number, vendor='cisco'):
         'vid': vlan_number
     }
     vlan_netbox_dict = requests.get(NETBOX_API_ROOT + NETBOX_VLANS_ENDPOINT,
-                                     headers=headers, params=query_params).json()['results'][0]
+                                    headers=headers, params=query_params).json()['results'][0]
     vlan_name = vlan_netbox_dict['name']
     description = vlan_netbox_dict['description']
     config_lines = []
@@ -92,60 +100,79 @@ def create_device_config(name):
 
     # if manufacturer.lower() == 'cisco' and 'l2' in device_model.lower():
 
+    vlans_config_list = []
+
     if manufacturer.lower() == 'cisco':
         result.append(f'hostname {name}')
         for interface_dict in ip_address_netbox_dict:
-            interface_config_list = []
+            format_params = dict()
 
-            interface_name = interface_dict['interface']['name']
+            format_params['interface_name'] = interface_dict['interface']['name']
             if interface_dict['interface']['form_factor']['label'] != 'Virtual' and device_type == 'switch':
-                interface_config_list.append(' no switchport')
+                format_params['switch_l3_interface'] = True
 
             interface_connection = interface_dict['interface'].get('interface_connection')
             if interface_connection is not None:
                 remote_interface = interface_connection['interface']
-                description = f"To {remote_interface['device']['name']} {remote_interface['name']}"
+                format_params['description'] = f"To {remote_interface['device']['name']} {remote_interface['name']}"
             else:
-                description = interface_dict['description']
+                format_params['description'] = interface_dict['description']
 
-            interface_config_list.append(f' description {description}')
+            format_params['ip_address'] = IPv4Interface(interface_dict['address'])
 
-            ip_address = IPv4Interface(interface_dict['address'])
-            interface_config_list.append(f' ip address {ip_address.ip} {ip_address.netmask}')
             if interface_dict['interface']['enabled']:
-                interface_config_list.append(' no shutdown')
+                format_params['enabled'] = True
 
-            interface_config = '\n'.join(interface_config_list)
-            result.append(f'interface {interface_name}\n{interface_config}\n!')
+            result.append(TEMPLATES.get_template('config/cisco/ios/l3_interface.template').render(format_params))
 
-        vlans_config_list = []
         for interface_dict in device_interfaces_netbox_dict:
             interface_name = interface_dict['name']
             description = interface_dict['description']
+
             if 'access' in description.lower():
+                # Interface description has "access" in it
                 match = L2_INTERFACE_NAME_RE.match(interface_name)
-                interface_name = match.group('interface_name')
-                vlan_number = match.group('vlan_number')
-                interface_config_list = list()
-                vlans_config_list.append(create_vlan(vlan_number, manufacturer))
+                if match is not None:
+                    format_params = match.groupdict()
+                    format_params['interface_description'] = 'Access port in VLAN {vlan_number}'.format(**format_params)
+                    format_params['enabled'] = interface_dict['enabled']
+                    vlans_config_list.append(create_vlan(format_params['vlan_number'], manufacturer))
 
-                interface_config_list.append(' switchport mode access')
-                interface_config_list.append(f' switchport access vlan {vlan_number}')
-
-                if interface_dict['enabled']:
-                    interface_config_list.append(' no shutdown')
-
-                interface_config = '\n'.join(interface_config_list)
-                result.append(f'interface {interface_name}\n{interface_config}\n!')
+                    result.append(TEMPLATES.get_template('config/cisco/ios/access_port.template').render(format_params))
 
     vlans_config = '\n'.join(vlans_config_list)
     result.insert(1, vlans_config)
     return '\n'.join(result)
 
 
+async def configure_device_from_netbox(connection_params):
+    hostname = connection_params.pop('hostname')
+    async with netdev.create(**connection_params) as device_conn:
+        device_config = create_device_config(hostname)
+        device_config_list = device_config.split('\n')
+        device_response = await device_conn.send_config_set(device_config_list)
+        return device_response
+
+
 def main():
-    config = create_device_config('SJ-SW1')
-    print(config)
+    start_time = time.time()
+
+    parsed_yaml = read_yaml()
+    devices_params_gen = form_connection_params_from_yaml(parsed_yaml, site_name='sjc')
+
+    loop = asyncio.get_event_loop()
+
+    tasks = [
+        loop.create_task(configure_device_from_netbox(device_params))
+        for device_params in devices_params_gen
+    ]
+
+    loop.run_until_complete(asyncio.wait(tasks))
+
+    # for task in tasks:
+    #     print(task.result())
+
+    print('It took {} seconds to run'.format(time.time() - start_time))
 
 
 if __name__ == '__main__':
