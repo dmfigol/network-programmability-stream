@@ -167,7 +167,7 @@ async def create_device_config(name, netbox_session):
 async def configure_device_from_netbox(connection_params, netbox_session):
     hostname = connection_params.pop('hostname')
     async with netdev.create(**connection_params) as device_conn:
-        device_config = create_device_config(hostname, netbox_session)
+        device_config = await create_device_config(hostname, netbox_session)
         device_config_list = device_config.split('\n')
         device_response = await device_conn.send_config_set(device_config_list)
         return device_response
