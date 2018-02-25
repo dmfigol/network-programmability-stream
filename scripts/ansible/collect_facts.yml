@@ -7,5 +7,5 @@
       username: "{{ username }}"
       password: "{{ password }}"
   tasks:
-    ios_facts:
-      provider: "{{ creds }}"
+    - ios_facts:
+        provider: "{{ creds }}"
