@@ -1,13 +1,11 @@
 ---
-vars:
-  cli:
-    host: "{{ inventory_hostname }}"
-    username: admin
-    password: admin
-    transport: cli
-
----
-# Collect all facts from the device
-- ios_facts:
-    gather_subset: all
-    provider: "{{ cli }}"
+- name: Collect facts
+  hosts: cisco
+  vars:
+    creds:
+      host: "{{ host }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+  tasks:
+    ios_facts:
+      provider: "{{ creds }}"

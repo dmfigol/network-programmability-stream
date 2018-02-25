@@ -1,1 +1,3 @@
-ansible_
+---
+username: admin
+password: admin
