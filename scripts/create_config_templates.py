@@ -81,7 +81,7 @@ async def create_vlan(netbox_session, vlan_number, vendor='cisco'):
 
 
 async def create_device_config(name):
-    with aiohttp.ClientSession(headers=form_headers()) as netbox_session:
+    async with aiohttp.ClientSession(headers=form_headers()) as netbox_session:
         result = []
 
         query_params = {
