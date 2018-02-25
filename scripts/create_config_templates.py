@@ -6,6 +6,7 @@ import sys
 import time
 from ipaddress import IPv4Interface
 
+import aiohttp
 import requests
 import decouple
 import jinja2
@@ -53,13 +54,21 @@ def form_headers():
     return headers
 
 
-def create_vlan(vlan_number, vendor='cisco'):
-    headers = form_headers()
+async def fetch_netbox_info(netbox_session, url, params):
+    async with netbox_session.get(url, params=params) as response:
+        result = await response.json()
+        return result['results']
+
+
+async def create_vlan(netbox_session, vlan_number, vendor='cisco'):
     query_params = {
         'vid': vlan_number
     }
-    vlan_netbox_dict = requests.get(NETBOX_API_ROOT + NETBOX_VLANS_ENDPOINT,
-                                    headers=headers, params=query_params).json()['results'][0]
+    vlan_netbox_dict = (await fetch_netbox_info(
+        netbox_session,
+        NETBOX_API_ROOT + NETBOX_VLANS_ENDPOINT,
+        params=query_params
+    ))[0]
     vlan_name = vlan_netbox_dict['name']
     description = vlan_netbox_dict['description']
     config_lines = []
@@ -71,16 +80,18 @@ def create_vlan(vlan_number, vendor='cisco'):
     return result
 
 
-def create_device_config(name):
-    headers = form_headers()
+async def create_device_config(name, netbox_session):
     result = []
 
     query_params = {
         'name': name,
     }
 
-    device_netbox_dict = requests.get(NETBOX_API_ROOT + NETBOX_DEVICES_ENDPOINT,
-                                      params=query_params, headers=headers).json()['results']
+    device_netbox_dict = await fetch_netbox_info(
+        netbox_session,
+        NETBOX_API_ROOT + NETBOX_DEVICES_ENDPOINT,
+        params=query_params
+    )
     manufacturer = device_netbox_dict[0]['device_type']['manufacturer']['name']
     device_model = device_netbox_dict[0]['device_type']['model']
     if 'l2' in device_model.lower():
@@ -92,11 +103,17 @@ def create_device_config(name):
         'device': name,
     }
 
-    ip_address_netbox_dict = requests.get(NETBOX_API_ROOT + NETBOX_IP_ADDRESSES_ENDPOINT,
-                                          params=query_params, headers=headers).json()['results']
+    ip_address_netbox_dict = await fetch_netbox_info(
+        netbox_session,
+        NETBOX_API_ROOT + NETBOX_IP_ADDRESSES_ENDPOINT,
+        params=query_params
+    )
 
-    device_interfaces_netbox_dict = requests.get(NETBOX_API_ROOT + NETBOX_INTERFACES_ENDPOINT,
-                                                 params=query_params, headers=headers).json()['results']
+    device_interfaces_netbox_dict = await fetch_netbox_info(
+        netbox_session,
+        NETBOX_API_ROOT + NETBOX_INTERFACES_ENDPOINT,
+        params=query_params
+    )
 
     # if manufacturer.lower() == 'cisco' and 'l2' in device_model.lower():
 
@@ -136,7 +153,9 @@ def create_device_config(name):
                     format_params = match.groupdict()
                     format_params['interface_description'] = 'Access port in VLAN {vlan_number}'.format(**format_params)
                     format_params['enabled'] = interface_dict['enabled']
-                    vlans_config_list.append(create_vlan(format_params['vlan_number'], manufacturer))
+                    vlans_config_list.append(
+                        await create_vlan(netbox_session, format_params['vlan_number'], manufacturer)
+                    )
 
                     result.append(TEMPLATES.get_template('config/cisco/ios/access_port.template').render(format_params))
 
@@ -145,10 +164,10 @@ def create_device_config(name):
     return '\n'.join(result)
 
 
-async def configure_device_from_netbox(connection_params):
+async def configure_device_from_netbox(connection_params, netbox_session):
     hostname = connection_params.pop('hostname')
     async with netdev.create(**connection_params) as device_conn:
-        device_config = create_device_config(hostname)
+        device_config = create_device_config(hostname, netbox_session)
         device_config_list = device_config.split('\n')
         device_response = await device_conn.send_config_set(device_config_list)
         return device_response
@@ -160,10 +179,11 @@ def main():
     parsed_yaml = read_yaml()
     devices_params_gen = form_connection_params_from_yaml(parsed_yaml, site_name='sjc')
 
+    netbox_session = aiohttp.ClientSession(headers=form_headers())
     loop = asyncio.get_event_loop()
 
     tasks = [
-        loop.create_task(configure_device_from_netbox(device_params))
+        loop.create_task(configure_device_from_netbox(device_params, netbox_session))
         for device_params in devices_params_gen
     ]
 

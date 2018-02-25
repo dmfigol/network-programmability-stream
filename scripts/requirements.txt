@@ -4,3 +4,4 @@ netdev==0.7.1
 requests==2.18.4
 python-decouple==3.1
 Jinja2==2.10
+aiohttp==3.0.3
