@@ -6,6 +6,7 @@ import sys
 import time
 from ipaddress import IPv4Interface
 
+import aiohttp
 import requests
 import decouple
 import jinja2
@@ -53,13 +54,21 @@ def form_headers():
     return headers
 
 
-def create_vlan(vlan_number, vendor='cisco'):
-    headers = form_headers()
+async def fetch_netbox_info(netbox_session, url, params):
+    async with netbox_session.get(url, params=params) as response:
+        result = await response.json()
+        return result['results']
+
+
+async def create_vlan(netbox_session, vlan_number, vendor='cisco'):
     query_params = {
         'vid': vlan_number
     }
-    vlan_netbox_dict = requests.get(NETBOX_API_ROOT + NETBOX_VLANS_ENDPOINT,
-                                    headers=headers, params=query_params).json()['results'][0]
+    vlan_netbox_dict = (await fetch_netbox_info(
+        netbox_session,
+        NETBOX_API_ROOT + NETBOX_VLANS_ENDPOINT,
+        params=query_params
+    ))[0]
     vlan_name = vlan_netbox_dict['name']
     description = vlan_netbox_dict['description']
     config_lines = []
@@ -71,84 +80,95 @@ def create_vlan(vlan_number, vendor='cisco'):
     return result
 
 
-def create_device_config(name):
-    headers = form_headers()
-    result = []
+async def create_device_config(name):
+    async with aiohttp.ClientSession(headers=form_headers()) as netbox_session:
+        result = []
 
-    query_params = {
-        'name': name,
-    }
+        query_params = {
+            'name': name,
+        }
 
-    device_netbox_dict = requests.get(NETBOX_API_ROOT + NETBOX_DEVICES_ENDPOINT,
-                                      params=query_params, headers=headers).json()['results']
-    manufacturer = device_netbox_dict[0]['device_type']['manufacturer']['name']
-    device_model = device_netbox_dict[0]['device_type']['model']
-    if 'l2' in device_model.lower():
-        device_type = 'switch'
-    else:
-        device_type = 'router'
+        device_netbox_dict = await fetch_netbox_info(
+            netbox_session,
+            NETBOX_API_ROOT + NETBOX_DEVICES_ENDPOINT,
+            params=query_params
+        )
+        manufacturer = device_netbox_dict[0]['device_type']['manufacturer']['name']
+        device_model = device_netbox_dict[0]['device_type']['model']
+        if 'l2' in device_model.lower():
+            device_type = 'switch'
+        else:
+            device_type = 'router'
 
-    query_params = {
-        'device': name,
-    }
+        query_params = {
+            'device': name,
+        }
 
-    ip_address_netbox_dict = requests.get(NETBOX_API_ROOT + NETBOX_IP_ADDRESSES_ENDPOINT,
-                                          params=query_params, headers=headers).json()['results']
+        ip_address_netbox_dict = await fetch_netbox_info(
+            netbox_session,
+            NETBOX_API_ROOT + NETBOX_IP_ADDRESSES_ENDPOINT,
+            params=query_params
+        )
 
-    device_interfaces_netbox_dict = requests.get(NETBOX_API_ROOT + NETBOX_INTERFACES_ENDPOINT,
-                                                 params=query_params, headers=headers).json()['results']
+        device_interfaces_netbox_dict = await fetch_netbox_info(
+            netbox_session,
+            NETBOX_API_ROOT + NETBOX_INTERFACES_ENDPOINT,
+            params=query_params
+        )
 
-    # if manufacturer.lower() == 'cisco' and 'l2' in device_model.lower():
+        # if manufacturer.lower() == 'cisco' and 'l2' in device_model.lower():
 
-    vlans_config_list = []
+        vlans_config_list = []
 
-    if manufacturer.lower() == 'cisco':
-        result.append(f'hostname {name}')
-        for interface_dict in ip_address_netbox_dict:
-            format_params = dict()
+        if manufacturer.lower() == 'cisco':
+            result.append(f'hostname {name}')
+            for interface_dict in ip_address_netbox_dict:
+                format_params = dict()
 
-            format_params['interface_name'] = interface_dict['interface']['name']
-            if interface_dict['interface']['form_factor']['label'] != 'Virtual' and device_type == 'switch':
-                format_params['switch_l3_interface'] = True
+                format_params['interface_name'] = interface_dict['interface']['name']
+                if interface_dict['interface']['form_factor']['label'] != 'Virtual' and device_type == 'switch':
+                    format_params['switch_l3_interface'] = True
 
-            interface_connection = interface_dict['interface'].get('interface_connection')
-            if interface_connection is not None:
-                remote_interface = interface_connection['interface']
-                format_params['description'] = f"To {remote_interface['device']['name']} {remote_interface['name']}"
-            else:
-                format_params['description'] = interface_dict['description']
+                interface_connection = interface_dict['interface'].get('interface_connection')
+                if interface_connection is not None:
+                    remote_interface = interface_connection['interface']
+                    format_params['description'] = f"To {remote_interface['device']['name']} {remote_interface['name']}"
+                else:
+                    format_params['description'] = interface_dict['description']
 
-            format_params['ip_address'] = IPv4Interface(interface_dict['address'])
+                format_params['ip_address'] = IPv4Interface(interface_dict['address'])
 
-            if interface_dict['interface']['enabled']:
-                format_params['enabled'] = True
+                if interface_dict['interface']['enabled']:
+                    format_params['enabled'] = True
 
-            result.append(TEMPLATES.get_template('config/cisco/ios/l3_interface.template').render(format_params))
+                result.append(TEMPLATES.get_template('config/cisco/ios/l3_interface.template').render(format_params))
 
-        for interface_dict in device_interfaces_netbox_dict:
-            interface_name = interface_dict['name']
-            description = interface_dict['description']
+            for interface_dict in device_interfaces_netbox_dict:
+                interface_name = interface_dict['name']
+                description = interface_dict['description']
 
-            if 'access' in description.lower():
-                # Interface description has "access" in it
-                match = L2_INTERFACE_NAME_RE.match(interface_name)
-                if match is not None:
-                    format_params = match.groupdict()
-                    format_params['interface_description'] = 'Access port in VLAN {vlan_number}'.format(**format_params)
-                    format_params['enabled'] = interface_dict['enabled']
-                    vlans_config_list.append(create_vlan(format_params['vlan_number'], manufacturer))
+                if 'access' in description.lower():
+                    # Interface description has "access" in it
+                    match = L2_INTERFACE_NAME_RE.match(interface_name)
+                    if match is not None:
+                        format_params = match.groupdict()
+                        format_params['interface_description'] = 'Access port in VLAN {vlan_number}'.format(**format_params)
+                        format_params['enabled'] = interface_dict['enabled']
+                        vlans_config_list.append(
+                            await create_vlan(netbox_session, format_params['vlan_number'], manufacturer)
+                        )
 
-                    result.append(TEMPLATES.get_template('config/cisco/ios/access_port.template').render(format_params))
+                        result.append(TEMPLATES.get_template('config/cisco/ios/access_port.template').render(format_params))
 
-    vlans_config = '\n'.join(vlans_config_list)
-    result.insert(1, vlans_config)
-    return '\n'.join(result)
+        vlans_config = '\n'.join(vlans_config_list)
+        result.insert(1, vlans_config)
+        return '\n'.join(result)
 
 
 async def configure_device_from_netbox(connection_params):
     hostname = connection_params.pop('hostname')
     async with netdev.create(**connection_params) as device_conn:
-        device_config = create_device_config(hostname)
+        device_config = await create_device_config(hostname)
         device_config_list = device_config.split('\n')
         device_response = await device_conn.send_config_set(device_config_list)
         return device_response

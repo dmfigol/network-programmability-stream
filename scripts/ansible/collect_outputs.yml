@@ -1,0 +1,24 @@
+---
+- name: Collect facts
+  gather_facts: no
+  hosts: sjc
+  connection: local
+  vars:
+    credentials:
+      host: "{{ ansible_host }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+
+  tasks:
+    - name: run show version on remote devices
+      ios_command:
+        commands:
+         - show version
+         - show memory statistics
+         - show arp
+         - show mac address-table
+        provider: "{{ credentials }}"
+      register: output
+
+    - debug:
+        msg: "{{ output.stdout_lines }}"

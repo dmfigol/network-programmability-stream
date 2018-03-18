@@ -1,0 +1,21 @@
+---
+- name: Collect facts
+  gather_facts: no
+  hosts: sjc
+  connection: local
+  vars:
+    credentials:
+      host: "{{ ansible_host }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      timeout: 30
+
+  tasks:
+    - ios_facts:
+        provider: "{{ credentials }}"
+      name: Collect IOS facts
+      register: ios_facts
+
+    - debug:
+        msg: "{{ ansible_net_hostname }}, version: {{ ansible_net_version }}"
+

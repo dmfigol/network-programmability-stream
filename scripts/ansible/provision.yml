@@ -1,0 +1,16 @@
+---
+- name: Provision Network
+  gather_facts: no
+  hosts: sjc
+  connection: local
+  vars:
+    credentials:
+      host: "{{ ansible_host }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+
+  tasks:
+    - name: Configure EIGRP
+      ios_config:
+        provider: "{{ credentials }}"
+        src: templates/ios_eigrp.j2
