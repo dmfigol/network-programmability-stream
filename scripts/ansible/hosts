@@ -1,0 +1,12 @@
+[local]
+localhost ansible_connection=local ansible_python_interpreter="/usr/bin/env python"
+
+[sjc]
+sjc-r1 ansible_host=192.168.122.11
+sjc-r2 ansible_host=192.168.122.12
+
+[sjc:vars]
+ansible_connection=local
+ansible_python_interpreter="/usr/bin/env python"
+username=admin
+password=admin

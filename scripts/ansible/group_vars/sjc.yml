@@ -1,3 +1,6 @@
 ---
 username: admin
 password: admin
+eigrp_as_number: 100
+eigrp_network_prefix: 172.16.0.0
+eigrp_network_wildcard_mask: 0.0.255.255

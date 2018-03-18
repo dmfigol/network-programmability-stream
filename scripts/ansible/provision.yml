@@ -1,5 +1,5 @@
 ---
-- name: Collect facts
+- name: Provision Network
   gather_facts: no
   hosts: sjc
   connection: local
@@ -8,14 +8,9 @@
       host: "{{ ansible_host }}"
       username: "{{ username }}"
       password: "{{ password }}"
-      timeout: 30
 
   tasks:
-    - ios_facts:
+    - name: Configure EIGRP
+      ios_config:
         provider: "{{ credentials }}"
-      name: Collect IOS facts
-      register: ios_facts
-
-    - debug:
-        msg: "{{ ansible_net_hostname }}, version: {{ ansible_net_version }}"
-
+        src: templates/ios_eigrp.j2

@@ -8,14 +8,17 @@
       host: "{{ ansible_host }}"
       username: "{{ username }}"
       password: "{{ password }}"
-      timeout: 30
 
   tasks:
-    - ios_facts:
+    - name: run show version on remote devices
+      ios_command:
+        commands:
+         - show version
+         - show memory statistics
+         - show arp
+         - show mac address-table
         provider: "{{ credentials }}"
-      name: Collect IOS facts
-      register: ios_facts
+      register: output
 
     - debug:
-        msg: "{{ ansible_net_hostname }}, version: {{ ansible_net_version }}"
-
+        msg: "{{ output.stdout_lines }}"
