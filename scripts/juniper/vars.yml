@@ -1,0 +1,32 @@
+devices:
+  vMX1:
+    local_as_number: 12
+    interfaces:
+      - name: ge-0/0/1
+        description: Connected to vMX2
+        ip_address: 10.12.12.1/24
+  vMX2:
+    local_as_number: 12
+    interfaces:
+      - name: ge-0/0/1
+        description: Connected to vMX1
+        ip_address: 10.12.12.2/24
+      - name: ge-0/0/2
+        description: Connected to vMX3
+        ip_address: 209.165.200.2/24
+    routing:
+      bgp:
+        external_neighbors:
+          - ip_address: 209.165.200.3
+            as_number: 3
+  vMX3:
+    local_as_number: 3
+    interfaces:
+      - name: ge-0/0/1
+        description: Connected to vMX2
+        ip_address: 209.165.200.3/24
+    routing:
+      bgp:
+        external_neighbors:
+          - ip_address: 209.165.200.2
+            as_number: 12
