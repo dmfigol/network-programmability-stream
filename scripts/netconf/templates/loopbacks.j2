@@ -1,0 +1,24 @@
+<config>
+  <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+    <interface>
+      {% for loopback in loopbacks %}
+      <Loopback>
+          <name>{{ loopback.number }}</name>
+          {% if loopback.description is defined %}
+          <description>{{ loopback.description }}</description>
+          {% endif %}
+          {% if loopback.ipv4_address is defined %}
+          <ip>
+            <address>
+                <primary>
+                  <address>{{ loopback.ipv4_address }}</address>
+                  <mask>{{ loopback.ipv4_mask }}</mask>
+                </primary>
+            </address>
+          </ip>
+          {% endif %}
+      </Loopback>
+      {% endfor %}
+    </interface>
+  </native>
+</config>

@@ -1,0 +1,50 @@
+---
+- name: Configuring matrix switches
+  hosts: matrix:pod-gear
+  vars_files:
+    - labs/{{ lab_name }}.yml
+  roles:
+    - lab-topology
+#
+#  pre_tasks:
+#    - name: Load topologies
+#      include_vars:
+#        file: "topologies/{{ item.path }}/topology.yml"
+#        name: "{{ item.path }}"
+#      with_filetree: topologies/
+#      when: item.state == 'directory'
+#      run_once: true
+#      delegate_to: localhost
+#      delegate_facts: true
+
+
+#  roles:
+#    - matrix-dot1q-tunnels
+
+#    - name: Load all topologies
+#      include_vars:
+#        dir: topologies
+#    - name: Load the lab
+#      include_vars:
+#        file: labs/1_programmability_lab.yml
+
+#    - name: Dump all vars
+#      # action: template src=templates/dumpall.j2 dest=/tmp/ansible.all
+#      debug:
+#        var: pods[inventory_hostname]['pod_number']
+##        var: pod_number
+#    - debug:
+#        var: hostvars
+
+#    - name: testing action plugin
+##      action: ios_dot1q_tunnel foo=bar
+#      ios_dot1q_tunnel:
+#      run_once: true
+#    - set_fact:
+#        "{{ interfaces.useless }}": hi
+#      run_once: true
+  tasks:
+    - debug:
+        var: hostvars
+      run_once: true
+

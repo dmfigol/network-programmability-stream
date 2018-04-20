@@ -1,0 +1,12 @@
+---
+- name: Collect outputs
+  hosts: all
+  tasks:
+    - name: run show commands on remote devices
+      ios_command:
+        commands:
+         - show ip interface brief
+      register: output
+
+    - debug:
+        msg: "{{ output.stdout_lines }}"

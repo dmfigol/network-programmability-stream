@@ -1,0 +1,26 @@
+{% for interface in interfaces %}
+interface {{ interface.name }}
+  {% if interface.description is defined %}
+  description {{ interface.description }}
+  {% endif %}
+  {% if interface.mode == 'trunk' %}
+  switchport trunk encapsulation dot1q
+  {% elif interface.mode == 'dot1q-tunnel' %}
+  {% if interface.vlan is defined %}
+  switchport access vlan {{ interface.vlan }}
+  {% endif %}
+  l2protocol-tunnel cdp
+  l2protocol-tunnel lldp
+  l2protocol-tunnel stp
+  l2protocol-tunnel vtp
+  {% endif %}
+  switchport mode {{ interface.mode }}
+  {% if interface.state is defined %}
+  {% if interface.state == 'present' %}
+    no shutdown
+  {% elif interface.state == 'absent' %}
+    shutdown
+  {% endif %}
+  {% endif %}
+!
+{% endfor %}

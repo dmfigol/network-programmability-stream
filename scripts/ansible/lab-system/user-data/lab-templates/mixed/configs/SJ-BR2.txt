@@ -1,0 +1,14 @@
+hostname SJ-BR2
+interface Ethernet0/0
+ duplex full
+!
+interface Ethernet1/1
+ duplex full
+ ip address 10.0.20.2 255.255.255.0
+ no shutdown
+!
+interface Ethernet1/2
+ duplex full
+ ip address 10.0.10.2 255.255.255.0
+ no shutdown
+!

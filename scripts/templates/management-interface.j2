@@ -1,0 +1,25 @@
+conf t
+vrf definition Mgmt
+ add ipv4
+!
+username admin privi 15 password admin
+ip domain name dmfigol.me
+int e0/0
+ no sw
+ vrf forwarding Mgmt
+ ip add 192.168.122.152 255.255.255.0
+ no sh
+ duplex full
+!
+line con 0
+ tran pref none
+ loggin synchr
+line vty 0 4
+ login local
+ privi level 15
+ transport input all
+!
+ip ssh version 2
+ip route vrf Mgmt 0.0.0.0 0.0.0.0 192.168.122.1
+crypto key gen rsa mod 2048
+end
