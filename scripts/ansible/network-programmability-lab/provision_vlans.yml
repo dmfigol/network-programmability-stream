@@ -1,0 +1,18 @@
+---
+- name: Provision Vlans
+  gather_facts: no
+  hosts: SJ-ISW1
+  vars:
+    ansible_connection: network_cli
+    ansible_network_os: ios
+    ansible_user: "{{ username }}"
+    ansible_ssh_pass: "{{ password }}"
+
+  tasks:
+    - name: Create vlan
+      ios_vlan:
+        aggregate: "{{ vlans }}"
+
+    - name: Configure switchports
+      ios_l2_interface:
+        aggregate: "{{ interfaces }}"

@@ -1,0 +1,25 @@
+deployment_name: 1 mixed (2 routers and 2 switches) and 1 dev (2 routers)
+devices:
+  SW1:
+    pod_number: 100
+    lab_hostname: SJ-DSW1
+  SW2:
+    pod_number: 100
+    lab_hostname: SJ-DSW2
+  R1:
+    pod_number: 100
+    lab_hostname: SJ-BR1
+  R2:
+    pod_number: 100
+    lab_hostname: SJ-BR2
+  R3:
+    pod_number: 200
+    lab_hostname: BRU-R1
+  R4:
+    pod_number: 200
+    lab_hostname: BRU-R2
+pods:
+  - pod_number: 100
+    lab_template: mixed
+  - pod_number: 200
+    lab_template: dev

@@ -1,0 +1,24 @@
+connections:
+  - - lab_hostname: SJ-BR1
+      port: Ethernet1/1
+    - lab_hostname: SJ-DSW1
+      port: Ethernet1/1
+  - - lab_hostname: SJ-BR1
+      port: Ethernet1/2
+    - lab_hostname: SJ-DSW2
+      port: Ethernet1/1
+  - - lab_hostname: SJ-BR2
+      port: Ethernet1/1
+    - lab_hostname: SJ-DSW1
+      port: Ethernet1/2
+  - - lab_hostname: SJ-BR2
+      port: Ethernet1/2
+    - lab_hostname: SJ-DSW2
+      port: Ethernet1/2
+  - - lab_hostname: SJ-DSW1
+      port: Ethernet1/0
+    - lab_hostname: SJ-DSW2
+      port: Ethernet1/0
+#  - - lab_hostname: SJ-DSW1
+#      port: Ethernet1/0
+#    - service: Client1

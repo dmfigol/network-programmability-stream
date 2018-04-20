@@ -1,0 +1,14 @@
+---
+- name: Provision Borders
+  gather_facts: no
+  hosts: SJ-BR1:SJ-BR2
+  vars:
+    ansible_connection: network_cli
+    ansible_network_os: ios
+    ansible_user: "{{ username }}"
+    ansible_ssh_pass: "{{ password }}"
+
+  tasks:
+    - name: Configure subinterfaces
+      ios_config:
+        src: templates/ios_l3_subif.j2

@@ -1,0 +1,10 @@
+---
+interfaces:
+  - name: GigabitEthernet4.2012
+    vlan_id: 2012
+    ipv4: 172.16.254.18
+    ipv4_mask: 255.255.255.252
+  - name: GigabitEthernet4.2029
+    vlan_id: 2029
+    ipv4: 100.64.29.2
+    ipv4_mask: 255.255.255.0

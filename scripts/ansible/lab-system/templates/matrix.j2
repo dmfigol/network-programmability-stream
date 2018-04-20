@@ -1,0 +1,9 @@
+vtp mode transparent
+vlan 2000-4000
+spanning-tree mst configuration
+ name NG-Lab
+ revision 1
+ instance 1 vlan 2000-4000
+!
+spanning-tree mode mst
+{% include 'l2_interfaces.j2' %}
