@@ -1,0 +1,7 @@
+hostname BRU-R2
+interface Ethernet0/0
+!
+interface Ethernet1/1
+ ip address 100.0.10.2 255.255.255.0
+ no shutdown
+!

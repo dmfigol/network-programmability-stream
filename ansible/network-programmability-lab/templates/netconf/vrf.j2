@@ -1,0 +1,23 @@
+<config>
+  <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+    {% if vrfs is defined %}
+    <vrf operation="replace">
+      {% for vrf in vrfs %}
+      <definition>
+        <name>{{ vrf.name }}</name>
+        <address-family>
+          {% if vrf.ipv4 is defined and vrf.ipv4 %}
+          <ipv4 />
+          {% endif %}
+          {% if vrf.ipv6 is defined and vrf.ipv6 %}
+          <ipv6 />
+          {% endif %}
+        </address-family>
+      </definition>
+      {% endfor %}
+    </vrf>
+    {% else %}
+    <vrf operation="remove"/>
+    {% endif %}
+  </native>
+</config>

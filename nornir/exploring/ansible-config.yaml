@@ -1,0 +1,5 @@
+---
+num_workers: 20
+inventory: nornir.plugins.inventory.ansible.AnsibleInventory
+AnsibleInventory:
+  hostsfile: "hosts"

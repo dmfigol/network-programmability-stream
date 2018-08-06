@@ -1,0 +1,12 @@
+---
+- name: Provision Network
+  hosts: R1
+
+  tasks:
+    - name: Configures VRFs
+      netconf_config:
+        src: templates/netconf/vrf.j2
+
+    - name: Configure L3 interfaces
+      netconf_config:
+        src: templates/netconf/l3_interface.j2

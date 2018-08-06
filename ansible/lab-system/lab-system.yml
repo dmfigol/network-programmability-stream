@@ -1,0 +1,61 @@
+---
+- name: Configuring matrix switches
+  hosts: matrix-switches:pod-gear
+  vars_files:
+    - user-data/last_run_deployment.yml
+    - user-data/deployments/{{ deployment }}.yml
+
+  tasks:
+    - name: Calculate new variables Q-in-Q tunnels based on the lab
+      deployment_setup:
+      run_once: true
+      delegate_to: localhost
+      delegate_facts: true
+      tags:
+        - matrix
+        - pod-gear
+
+
+    - name: Show current deployment
+      run_once: true
+      debug:
+        msg: "Using deployment file: {{ deployment }} for deployment name: {{ deployment_name }}"
+
+
+    - name: Update matrix and pod-gear variables
+      set_fact:
+        "{{ item }}": "{{ hostvars.localhost.devices[inventory_hostname][item] }}"
+      loop: "{{ hostvars.localhost.devices[inventory_hostname].updated_vars }}"
+      when: "hostvars.localhost.devices[inventory_hostname].updated_vars is defined"
+      tags:
+        - matrix
+        - pod-gear
+
+
+    - name: Configure matrix switches according to the lab
+      ios_config:
+        src: templates/matrix.j2
+      when: "'matrix-switches' in group_names and
+            controlled_pod_number == 'all'"
+      tags:
+        - matrix
+
+
+    - import_role:
+        name: pod-configuration-setup
+      when: pod_number is defined and
+            (controlled_pod_number | int == pod_number | int or
+            controlled_pod_number == 'all')
+      tags:
+        - pod-gear
+
+
+    - local_action:
+        module: copy
+        content: "deployment: {{ deployment }}"
+        dest: user-data/last_run_deployment.yml
+      run_once: true
+      tags:
+        - pod-gear
+        - matrix
+

@@ -1,0 +1,11 @@
+ip domain-name {{ domain_name }}
+{% if interfaces is defined %}
+{% for interface in interfaces %}
+interface {{ interface.name }}
+ {% if interface.ipv4_address is defined %}
+ ip address {{ interface.ipv4_address }} {{ interface.ipv4_mask }}
+ {% endif %}
+!
+{% endfor %}
+{% endif %}
+end

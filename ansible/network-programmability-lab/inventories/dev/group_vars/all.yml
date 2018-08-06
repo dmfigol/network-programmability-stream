@@ -1,0 +1,6 @@
+ansible_user: cisco
+ansible_ssh_pass: cisco
+ansible_connection: netconf
+ansible_network_os: ios
+ansible_python_interpreter: "/usr/bin/env python"
+timeout: 120

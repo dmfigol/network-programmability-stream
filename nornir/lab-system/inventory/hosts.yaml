@@ -1,0 +1,53 @@
+---
+localhost:
+  nornir_host: 127.0.0.1
+  nornir_nos: linux
+  type: host
+R1:
+  nornir_host: 192.168.122.101
+  groups:
+    - pod-routers
+R2:
+  nornir_host: 192.168.122.102
+  groups:
+    - pod-routers
+R3:
+  nornir_host: 192.168.122.103
+  groups:
+    - pod-routers
+R4:
+  nornir_host: 192.168.122.104
+  groups:
+    - pod-routers
+SW1:
+  nornir_host: 192.168.122.111
+  groups:
+    - pod-switches
+SW2:
+  nornir_host: 192.168.122.112
+  groups:
+    - pod-switches
+SW3:
+  nornir_host: 192.168.122.113
+  groups:
+    - pod-switches
+SW4:
+  nornir_host: 192.168.122.114
+  groups:
+    - pod-switches
+matrix-1:
+  nornir_host: 192.168.122.151
+  groups:
+    - matrix-switches
+matrix-2:
+  nornir_host: 192.168.122.152
+  groups:
+    - matrix-switches
+matrix-3:
+  nornir_host: 192.168.122.153
+  groups:
+    - matrix-switches
+matrix-4:
+  nornir_host: 192.168.122.154
+  groups:
+    - matrix-switches

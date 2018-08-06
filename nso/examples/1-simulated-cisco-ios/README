@@ -1,0 +1,319 @@
+
+Running towards 3 emulated Cisco cisco-ios routers
+----------------------------------------------
+
+This example will show how to setup a simulated network of Cisco-ios routers
+and how to manage these with NCS. NCS will talk Cisco CLI towards the routers.
+
+NCS interfaces the devices by using Network Element Drivers, NEDs. Tail-f ships
+some NEDs in $NCS_DIR/packages/neds, more or available by contacting Tail-f and
+the developing section in the NCS User Guide explains how to develop NEDs for
+different protocols.
+
+NEDs are shipped in packages. Packages is a structured way of adding software
+to NCS and they can contain NEDs, added User Interface components, service
+applications like VPN activation etc.
+
+The most important part of the NED is the data-model. It specifies which parts
+of the device NCS can configure. In order for NCS to work with the configuration
+commands you need in your scenario, the corresponding data-model must cover
+those parts. It is an important first phase in any NCS deployment to make sure
+that the required NEDs and corresponding data-models cover the configuration
+scenarios.
+
+In order to understand the capabilities of the cisco-ios in this example, do:
+  $pyang -f tree $NCS_DIR/packages/neds/cisco-ios/src/yang/tailf-ned-cisco-ios.yang
+
+This prints a tree-structure of the YANG data-model and represents what
+you can do in this example.
+
+The NEDs can also be used by the NCS Network Simulator, ncs-netsim, to simulate
+the management interface of devices.
+
+Preparations
+------------
+
+1) Make sure you have sourced the ncsrc file in $NCS_DIR. This sets up paths and
+   environment variables in order to run NCS. So this must be done all times
+   before running NCS, so it is recommended to put that in your profile.
+
+Optional:
+If you do not want to create the example files in the NCS installation
+directory $NCS_DIR/examples.ncs/getting-started/using-ncs/1-simulated-cisco-ios,
+for example if you are several users sharing the same installation, you can
+run the example in a separate directory.
+
+2) Create an empty directory, for example in your home directory. NCS and the
+   simulator will create files and directories in this example. Make sure you
+   change to this directory before continuing.
+
+
+Setting up and running the simulator
+-------------------------------------
+
+The package describing the device is $NCS_DIR/packages/neds/cisco-ios. The
+ncs-netsim create-network command takes three parameters: the NED package,
+number of simulated devices and the name prefix.
+
+Perform the following command:
+
+   $ ncs-netsim create-network $NCS_DIR/packages/neds/cisco-ios 3 c
+
+This creates the simulated network in ./netsim. The simulated network consists
+of 3 devices, c0, c1, and c2 and they all speak Cisco CLI.
+
+Start the simulator:
+
+   $ ncs-netsim start
+   DEVICE c0 OK STARTED
+   DEVICE c1 OK STARTED
+   DEVICE c2 OK STARTED
+
+Run the CLI towards one of the devices
+
+    $ ncs-netsim cli-i c1
+    admin connected from 127.0.0.1 using console *
+
+    c1> enable
+    c1# show running-config
+    
+     class-map m
+     match mpls experimental topmost 1
+     match packet length max 255
+     match packet length min 2
+     match qos-group 1
+    !
+    ...
+    c1# exit
+
+This shows that the device has some initial config.
+Try netsim help to list all available commands:
+
+     $ ncs-netsim -h
+
+Make sure to stop the simulator before starting another example.
+
+
+Setting up and starting NCS
+---------------------------
+
+The next thing to do is to setup NCS populated with the above devices.
+The ncs-setup command can take an existing netsim directory and create
+an NCS environment ready to run towards the simulated devices.
+Remember, the ncs-netsim step above created a ./netsim directory.
+
+   $ ncs-setup --netsim-dir ./netsim --dest .
+
+This basically performs the following:
+   - create directories needed for NCS (ncs-cdb, state, logs, packages)
+   - link the cisco-ios NED package into the packages directory
+   - populate the NCS database with meta-data about the simulated devices:
+     ip address, port, SSH host keys, authentication, and NED type.
+
+Now, start ncs
+
+  $ ncs
+
+(Make sure ncs-netsim is still running from the previous steps)
+
+Start the NCS CLI:
+
+  $ ncs_cli -u admin
+
+  admin@ncs> show packages
+  packages package cisco-ios
+  ....
+
+  admin@ncs> show configuration devices device
+  device c0 {
+    address   127.0.0.1;
+    port      10022;
+    authgroup default;
+    ssh {
+        host-key ssh-rsa {
+            key "...";
+        }
+    }
+    device-type {
+        cli {
+            ned-id cisco-ios;
+        }
+    }
+    state {
+        admin-state unlocked;
+    }
+  }
+  device c1 {
+  ...
+
+This shows the populated meta-data for the simulated devices. They all run
+at localhost but different ports. NCS knows how to talk to them via the
+ned-id.
+
+Once logged in to the NCS CLI, you can show device status or change
+the device configuration. At this point NCS isn't aware whether the
+devices actually exist or what their configurations might be. So the
+first step will be to connect to the devices and read up their
+configurations into NCS.
+
+    admin@ncs> request devices connect
+    connect-result {
+    device c0
+    result true
+    info (admin) Connected to c0 - 127.0.0.1:10022
+}
+....
+
+    admin@ncs> request devices sync-from
+    sync-result {
+    device c0
+    result true
+}
+....
+
+View the configuration of the "c0" device using the command:
+
+    admin@ncs> show configuration devices device c0 config
+
+Or show a particular piece of configuration from several devices
+
+   admin@ncs> show configuration devices device c0..2 config ios:router
+
+In order to change the configuration enter configure mode:
+
+   admin@ncs> configure
+   Entering configuration mode private
+
+Change or add some configuration across the devices, for example:
+
+   admin@ncs% set devices device c0..2 config ios:router bgp 64512 neighbor \
+        1.2.3.4 remote-as 2
+
+
+We need to stop here, and explain how NCS applies configuration changes to
+the network. At this point the changes are local to NCS, nothing has been sent
+to the devices yet. Since the NCS Configuration Database, CDB, is in sync with
+the network, NCS can always calculate the minimum diff to apply the changes to
+the network. The command below compares the ongoing changes with the running
+database:
+
+    admin@ncs% compare running brief
+     devices {
+         device c0 {
+             config {
+                 ios:router {
+                     bgp 64512 {
+                         neighbor 1.2.3.4 {
+    -                        remote-as 1;
+    +                        remote-as 2;
+
+
+    ....
+
+The changes can be committed to the devices and the NCS CDB in one go. In the
+commit command below, we pipe to details to see what is going on.
+
+   admin@ncs% commit | details
+
+A common misunderstanding is that you have to synchronize NCS and the devices
+after any changes. This is not the case, when changes are committed they are
+applied to the devices and the NCS database as one transaction. If any of
+the devices fails, nothing happens, NCS will roll-back any changes made to
+any of the devices and the NCS CDB will not be updated. Also as seen by the
+details output, NCS stores a roll-back file for every commit so the whole
+transaction can be rolled back manually.
+
+Take a look at the rollback file:
+
+    admin@ncs% run file show logs/rollback10006
+    # Created by: admin
+    # Date: 2012-11-05 10:06:02
+    # Via: cli
+    # Type: delta
+    # Label:
+    # Comment:
+    # No: 10006
+
+    devices {
+        device c0 {
+            config {
+                ios:router {
+                    bgp 64512 {
+                        neighbor 1.2.3.4 {
+                            remote-as 1;
+                        }
+
+
+
+Load the rollback file:
+    admin@ncs% rollback 10006
+
+Show the diff:
+
+    admin@ncs% compare running brief
+     devices {
+         device c0 {
+             config {
+                 ios:router {
+                     bgp 64512 {
+                         neighbor 1.2.3.4 {
+    -                        remote-as 2;
+    +                        remote-as 1;
+                         }
+    .....
+
+Commit the rollback:
+
+   admin@ncs% commit
+
+
+To see what is going on between NCS and the device CLI enable trace:
+
+    admin@ncs% set devices global-settings trace raw trace-dir logs
+
+Trace settings do only take effect for new connections so disconnect:
+
+    admin@ncs> request devices disconnect
+
+Make a change to for example c0:
+
+     admin@ncs% set devices device c0 config ios:interface FastEthernet 1 ip address \
+          primary address 192.168.1.1 mask 255.255.255.0
+
+     admin@ncs% commit
+
+     admin@ncs% exit
+
+     admin@ncs> exit
+
+
+Inspect the CLI trace:
+
+    $less logs/ned-cisco-ios-c0.trace
+
+
+All of the above can also be done in the Web UI at http://127.0.0.1:8080.
+
+Do not forget to stop ncs and ncs-netsim before moving on:
+
+   $ ncs-netsim stop
+   DEVICE c0 STOPPED
+   DEVICE c1 STOPPED
+   DEVICE c2 STOPPED
+   
+   $ ncs --stop
+
+If you want to restore the example to the initial configuration do:
+
+   $ ncs-netsim reset
+   $ ncs-setup --reset
+
+
+
+The commands in summary:
+
+ncs-netsim create-network $NCS_DIR/packages/neds/cisco-ios 3 c
+ncs-netsim start
+ncs-setup --netsim-dir ./netsim --dest .
+ncs
+ncs_cli -u admin

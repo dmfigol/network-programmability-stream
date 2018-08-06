@@ -1,0 +1,55 @@
+---
+localhost:
+  nornir_host: localhost
+  nornir_username: gns3
+  nornir_password: cisco123
+  role: server
+  type: linux
+sj-br1:
+  nornir_host: 192.168.122.11
+  nornir_username: admin
+  nornir_password: admin
+  site: sj
+  groups:
+    - sj-edge
+  nornir_nos: ios
+  type: network_device
+  interfaces:
+    - name: Loopback0
+      ipv4_address: 10.3.3.3
+      ipv4_mask: 255.255.255.255
+    - name: Loopback1
+      ipv4_address: 100.1.1.1
+      ipv4_mask: 255.255.255.255
+sj-br2:
+  nornir_host: 192.168.122.12
+  nornir_username: admin
+  nornir_password: admin
+  site: sj
+  groups:
+    - sj-edge
+  nornir_nos: ios
+  type: network_device
+  interfaces:
+    - name: Loopback0
+      ipv4_address: 10.2.2.2
+      ipv4_mask: 255.255.255.255
+    - name: Loopback1
+      ipv4_address: 100.2.2.2
+      ipv4_mask: 255.255.255.255
+isp1-pe1:
+  nornir_host: 192.168.122.41
+  nornir_username: admin
+  nornir_password: admin
+  nornir_nos: ios
+  groups:
+    - isp1
+  type: network_device
+isp2-pe1:
+  nornir_host: 192.168.122.51
+  nornir_username: admin
+  nornir_password: admin
+  groups:
+    - isp2
+  nornir_nos: ios
+  type: network_device

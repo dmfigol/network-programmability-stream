@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+netmiko = "*"
+netdev = "*"
+requests = "*"
+python-decouple = "*"
+aiohttp = "*"
+ansible = "*"
+junos-eznc = "*"
+xmltodict = "*"
+PyYAML = "*"
+Jinja2 = "*"
+
+[dev-packages]
+mypy = "*"
+ipdb = "*"
+
+[requires]
+python_version = "3.7"

@@ -1,0 +1,30 @@
+---
+defaults:
+  nornir_username: admin
+  nornir_password: admin
+  nornir_nos: ios
+  type: network_device
+  pod: all
+
+pod-gear:
+
+
+infra:
+
+
+pod-routers:
+  groups:
+    - pod-gear
+
+
+pod-switches:
+  groups:
+    - pod-gear
+
+
+matrix-switches:
+  dot1q_tunnel_vlan_start: 2000
+  groups:
+    - infra
+
+

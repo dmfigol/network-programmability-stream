@@ -1,9 +1,0 @@
-hostname BRU-R2
-interface Ethernet0/0
- duplex full
-!
-interface Ethernet1/1
- duplex full
- ip address 100.0.10.2 255.255.255.0
- no shutdown
-!

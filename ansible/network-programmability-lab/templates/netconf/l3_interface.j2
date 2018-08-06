@@ -1,0 +1,33 @@
+<config>
+  <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+    <interface>
+      {% for interface in interfaces %}
+      <{{ interface.type }}>
+        <name>{{ interface.number }}</name>
+        {% if interface.dot1q_vlan is defined %}
+        <encapsulation operation="replace">
+          <dot1Q>
+            <vlan-id>{{ interface.dot1q_vlan }}</vlan-id>
+          </dot1Q>
+        </encapsulation>
+        {% else %}
+        <encapsulation operation="remove"/>
+        {% endif %}
+
+        {% if interface.ipv4_addr is defined %}
+        <ip>
+          <address>
+            <primary>
+              <address>{{ interface.ipv4_addr | ipaddr('address') }}</address>
+              <mask>{{ interface.ipv4_addr | ipaddr('netmask') }}</mask>
+            </primary>
+          </address>
+        </ip>
+        {% else %}
+        <ip operation="remove" />
+        {% endif %}
+      </{{ interface.type }}>
+      {% endfor %}
+    </interface>
+  </native>
+</config>

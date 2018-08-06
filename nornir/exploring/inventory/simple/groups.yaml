@@ -1,0 +1,29 @@
+---
+defaults:
+  domain_name: dmfigol.me
+
+sj:
+  some_var: true
+
+global:
+  some_var: false
+
+isp: {}
+
+
+sj-edge:
+  groups:
+    - sj
+    - global
+  bgp: true
+
+
+isp1:
+  asn: 1000
+  groups:
+    - isp
+
+isp2:
+  asn: 2000
+  groups:
+    - isp

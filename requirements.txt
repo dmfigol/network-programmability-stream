@@ -1,0 +1,10 @@
+netmiko
+ruamel.yaml
+netdev
+requests
+python-decouple
+Jinja2
+aiohttp
+ansible
+junos-eznc
+xmltodict

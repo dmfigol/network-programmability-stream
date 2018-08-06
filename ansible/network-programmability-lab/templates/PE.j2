@@ -1,0 +1,17 @@
+#jinja2: trim_blocks:False
+    {%- for vrf in vrfs %}
+    <vrf>
+      <name>{{ vrf.name }}</name>
+      {%- if vrf.rd is defined %}
+      <rd>{{ vrf.rd }}</rd>
+      <route-target>
+        <direction>export</direction>
+        <target>{{ vrf.rt}}</target>
+      </route-target>
+      <route-target>
+        <direction>import</direction>
+        <target>{{ vrf.rt }}</target>
+      </route-target>
+      {%- endif %}
+    </vrf>
+    {%- endfor %}
