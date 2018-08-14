@@ -8,3 +8,5 @@ aiohttp
 ansible
 junos-eznc
 xmltodict
+django
+napalm

@@ -1,0 +1,5 @@
+-r requirements.txt
+ipython
+ipdb
+black
+mypy
