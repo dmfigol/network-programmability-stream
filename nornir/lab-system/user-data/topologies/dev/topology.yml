@@ -1,5 +1,0 @@
-connections:
-  - - lab_hostname: BRU-R1
-      port: Ethernet1/1
-    - lab_hostname: BRU-R2
-      port: Ethernet1/1

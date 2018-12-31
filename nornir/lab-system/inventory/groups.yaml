@@ -1,13 +1,16 @@
 ---
 defaults:
-  nornir_username: admin
-  nornir_password: admin
-  nornir_nos: ios
-  type: network_device
-  pod: all
+  username: admin
+  password: admin
+  platform: cisco_ios
+
+dynamic:
+advanced-dot1x__01:
+advanced-dot1x__02:
+
 
 pod-gear:
-
+  pod: unallocated
 
 infra:
 
@@ -15,11 +18,15 @@ infra:
 pod-routers:
   groups:
     - pod-gear
+  tags:
+    - router
 
 
 pod-switches:
   groups:
     - pod-gear
+  tags:
+    - switch
 
 
 matrix-switches:
@@ -27,4 +34,10 @@ matrix-switches:
   groups:
     - infra
 
+pair-routers:
+  groups:
+    - infra
 
+pod-mgmt:
+  groups:
+    - infra

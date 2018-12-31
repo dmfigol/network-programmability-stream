@@ -1,0 +1,57 @@
+devices:
+  sjc-border:
+    tags:
+      - router
+    group: advanced-dot1x
+  sjc-access:
+    tags:
+      - switch
+    group: advanced-dot1x
+    special_reset: true
+  rtp-border:
+    tags:
+      - router
+  rtp-access:
+    tags:
+      - switch
+
+vms:
+  - name: ise
+  - name: dnac
+  - name: client1
+  - name: client2
+
+connections:
+  - - hostname: sjc-border
+      port: Ethernet1/1
+    - hostname: sjc-access
+      port: Ethernet1/1
+  - - hostname: sjc-border
+      port: Ethernet1/2
+    - hostname: rtp-access
+      port: Ethernet1/1
+  - - hostname: rtp-border
+      port: Ethernet1/1
+    - hostname: sjc-access
+      port: Ethernet1/2
+  - - hostname: rtp-border
+      port: Ethernet1/2
+    - hostname: rtp-access
+      port: Ethernet1/2
+  - - hostname: sjc-access
+      port: Ethernet1/0
+    - hostname: rtp-access
+      port: Ethernet1/0
+  - - hostname: sjc-border
+      port: Ethernet1/3
+    - service: internet
+  - - hostname: rtp-border
+      port: Ethernet1/3
+    - vm: ise
+      update_vlan: True
+    - vm: dnac
+      update_vlan: True
+  - - hostname: rtp-border
+      port: Ethernet1/3
+    - vm: client1
+      update_vlan: False

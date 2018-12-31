@@ -1,0 +1,8 @@
+rack: A2
+rack_unit: 17
+interfaces:
+  - name: Ethernet0/0
+    vrf: Mgmt
+    connected_device:
+      name: pod-mgmt-1
+      port: GigabitEthernet0/4

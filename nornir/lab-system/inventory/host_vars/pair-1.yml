@@ -1,0 +1,21 @@
+rack: A2
+rack_unit: 20
+interfaces:
+  - name: Ethernet0/0
+    vrf: Mgmt
+    ipv4_address: 192.168.122.161/24
+  - name: Ethernet1/0
+    ipv4_address: 192.168.122.170/24
+  - name: Ethernet1/1
+  - name: Ethernet1/1.1901
+    vlan: 1901
+    ipv4_address: 172.16.1.1/24
+    service: internet
+  - name: Ethernet1/1.1902
+    vlan: 1902
+    ipv4_address: 172.16.2.1/24
+    service: internet
+  - name: Ethernet1/1.1903
+    vlan: 1903
+    ipv4_address: 172.16.3.1/24
+    service: internet

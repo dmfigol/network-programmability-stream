@@ -1,0 +1,73 @@
+testbed:
+
+  name: static-csrs
+
+
+devices:
+
+  CSR-DEV:
+    alias: csr_dev
+    os: iosxe
+    type: CSR1000v
+    tacacs:
+        username: cisco
+    passwords:
+        tacacs: cisco
+
+    connections:
+      defaults:
+        class: unicon.Unicon
+      ssh:
+        ip: 10.48.18.30
+        protocol: ssh
+      netconf:
+        ip: 10.48.18.30
+        protocol: netconf
+        port: 830
+
+#      console:
+#        protocol: telnet
+#        ip: esxi
+#        port: 3013
+    custom:
+      abstraction:
+        order: [os, type]
+
+  CSR3:
+    alias: csr3
+    os: iosxe
+    type: CSR1000v
+    tacacs:
+        username: cisco
+    passwords:
+        tacacs: cisco
+
+    connections:
+      defaults:
+        class: unicon.Unicon
+      ssh:
+        ip: 10.48.18.26
+        protocol: ssh
+      console:
+        protocol: telnet
+        ip: esxi
+        port: 3003
+    custom:
+      abstraction:
+        order: [os, type]
+
+
+#topology:
+#  csr1000v:
+#    interfaces:
+#      GigabitEthernet1:
+#        ipv4: 10.10.20.48
+#        link: flat
+#        type: ethernet
+#
+#  sbx-n9kv-ao:
+#    interfaces:
+#      Ethernet1/1:
+#        ipv4: 10.10.20.95
+#        link: flat
+#type: ethernet

@@ -1,0 +1,10 @@
+open_mode: true
+
+pillar_roots:
+  base:
+    - /etc/salt/pillar
+
+file_roots:
+  base:
+    - /etc/salt
+    - /etc/salt/states

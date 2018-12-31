@@ -1,0 +1,13 @@
+devices:
+  Madrid:
+    tags:
+      - router
+  London:
+    tags:
+      - router
+
+connections:
+  - - hostname: Madrid
+    - hostname: London
+  - - hostname: Madrid
+    - service: internet

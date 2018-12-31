@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx
+    volumes:
+      - ${PWD}/master:/master
+  redis:
+    image: redis

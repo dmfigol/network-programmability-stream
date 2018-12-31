@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "netprog-stream-django"
+version = "0.1.0"
+description = "Awesome network controller"
+authors = ["Dmitry Figol <git@dmfigol.me>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "3.6"
+napalm = "^2.3"
+netmiko = "^2.2"
+django = "^2.1"
+
+[tool.poetry.dev-dependencies]

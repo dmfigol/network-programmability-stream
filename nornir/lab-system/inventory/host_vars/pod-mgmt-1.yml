@@ -1,0 +1,15 @@
+rack: A2
+rack_unit: 20
+interfaces:
+  - name: GigabitEthernet0/2
+    connected_device:
+      name: SW1
+      port: Ethernet0/0
+  - name: GigabitEthernet0/2
+    connected_device:
+      name: SW2
+      port: Ethernet0/0
+  - name: GigabitEthernet0/4
+    connected_device:
+      name: SW3
+      port: Ethernet0/0

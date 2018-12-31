@@ -1,0 +1,11 @@
+hostname rtp-border
+interface Ethernet0/0
+!
+interface Ethernet1/1
+ ip address 10.0.20.2 255.255.255.0
+ no shutdown
+!
+interface Ethernet1/2
+ ip address 10.0.10.2 255.255.255.0
+ no shutdown
+!

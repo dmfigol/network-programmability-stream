@@ -1,0 +1,30 @@
+hostname sjc-access
+vtp mode transparent
+vlan 10,20
+!
+interface Ethernet1/1
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+ no shutdown
+!
+interface Ethernet1/2
+ switchport mode access
+ switchport access vlan 20
+ spanning-tree portfast
+ no shutdown
+!
+interface Ethernet1/0
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan all
+ no shutdown
+!
+interface vlan10
+ ip addr 10.0.10.101 255.255.255.0
+ no shutdown
+!
+interface vlan20
+ ip addr 10.0.20.101 255.255.255.0
+ no shutdown
+!

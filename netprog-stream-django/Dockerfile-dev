@@ -1,0 +1,19 @@
+FROM python:3.6-slim
+LABEL maintainer="Dmitry Figol <git@dmfigol.me>"
+
+RUN apt-get update \
+    && apt-get install -y curl \
+    && curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+
+COPY pyproject.toml .
+COPY pyproject.lock .
+
+RUN python -m venv .venv \
+    && poetry install --no-dev --no-interaction \
+    && mkdir netprog-stream-django
+
+WORKDIR netprog-stream-django
+
+EXPOSE 8000
+
+CMD ["poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]

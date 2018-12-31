@@ -1,0 +1,8 @@
+group: krk-l2
+data:
+  stp_root:
+    vlans:
+      10:
+        - krk-dsw1
+      20:
+        - krk-dsw1

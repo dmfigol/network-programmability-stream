@@ -1,0 +1,7 @@
+hostname London
+interface Ethernet0/0
+!
+interface {{ interface_1 }}
+ ip address 100.0.10.2 255.255.255.0
+ no shutdown
+!

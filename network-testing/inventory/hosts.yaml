@@ -1,0 +1,29 @@
+---
+krk-asw1:
+  hostname: 192.168.122.21
+  groups:
+    - krk
+    - krk-l2
+krk-asw2:
+  hostname: 192.168.122.22
+  groups:
+    - krk
+    - krk-l2
+krk-dsw1:
+  hostname: 192.168.122.23
+  groups:
+    - krk
+    - krk-l2
+krk-dsw2:
+  hostname: 192.168.122.24
+  groups:
+    - krk
+    - krk-l2
+krk-edge1:
+  hostname: 192.168.122.25
+  groups:
+    - krk
+isp1-pe1:
+  hostname: 192.168.122.41
+  groups:
+    - isp1

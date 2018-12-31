@@ -1,0 +1,11 @@
+ubuntu 10.10.20.25
+telemetry / Cisco1234!
+
+csr: 10.10.20.30
+admin / Cisco1234!
+
+grafana: 3000/tcp
+zookeeper: 2181/tcp
+jupyter: 8888/tcp
+kafka: 9092/tcp
+opentsdb: 4242/tcp

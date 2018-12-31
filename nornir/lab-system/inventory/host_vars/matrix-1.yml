@@ -1,0 +1,63 @@
+rack: A1
+rack_unit: 10
+interfaces:
+  - name: Ethernet1/0
+    connected_device:
+      name: R1
+      port: Ethernet1/0
+    mode: dot1q-tunnel
+  - name: Ethernet1/1
+    connected_device:
+      name: R1
+      port: Ethernet1/1
+    mode: dot1q-tunnel
+  - name: Ethernet1/2
+    connected_device:
+      name: R1
+      port: Ethernet1/2
+    mode: dot1q-tunnel
+  - name: Ethernet1/3
+    connected_device:
+      name: R1
+      port: Ethernet1/3
+    mode: dot1q-tunnel
+  - name: Ethernet2/0
+    connected_device:
+      name: SW1
+      port: Ethernet1/0
+    mode: dot1q-tunnel
+  - name: Ethernet2/1
+    connected_device:
+      name: SW1
+      port: Ethernet1/1
+    mode: dot1q-tunnel
+  - name: Ethernet2/2
+    connected_device:
+      name: SW1
+      port: Ethernet1/2
+    mode: dot1q-tunnel
+  - name: Ethernet2/3
+    connected_device:
+      name: SW1
+      port: Ethernet1/3
+    mode: dot1q-tunnel
+  - name: Ethernet3/0
+    connected_device:
+      name: pair-1
+      port: Ethernet1/3
+    mode: trunk
+  - name: Ethernet7/0
+    mode: trunk
+    connected_device:
+      name: matrix-2
+      port: Ethernet7/0
+  - name: Ethernet7/1
+    mode: trunk
+  - name: Ethernet7/2
+    mode: trunk
+    connected_device:
+      name: matrix-3
+      port: Ethernet7/2
+  - name: Ethernet7/3
+    mode: trunk
+

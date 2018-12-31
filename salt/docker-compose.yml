@@ -1,0 +1,24 @@
+version: '2.1'
+
+services:
+  salt-master:
+    image: mirceaulinic/salt-master:2018.3.0
+    hostname: salt-master
+    container_name: salt-master
+    environment:
+      - LOG_LEVEL
+    volumes:
+      - ${PWD}/master:/etc/salt/master
+      - ${PWD}/pillar/:/etc/salt/pillar/
+      - ${PWD}/states/:/etc/salt/states/
+  salt-proxy:
+    image: mirceaulinic/salt-proxy:2018.3.0
+    hostname: ${PROXYID}
+    container_name: salt-proxy-${PROXYID}
+    volumes:
+      - ${PWD}/proxy:/etc/salt/proxy
+    environment:
+      - LOG_LEVEL
+      - PROXYID
+    depends_on:
+      - salt-master
