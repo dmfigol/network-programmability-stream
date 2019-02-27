@@ -1,14 +1,24 @@
 [tool.poetry]
-name = "netprog-stream-django"
+name = "netprog_stream"
 version = "0.1.0"
 description = "Awesome network controller"
 authors = ["Dmitry Figol <git@dmfigol.me>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "3.6"
+python = "^3.6"
 napalm = "^2.3"
 netmiko = "^2.2"
 django = "^2.1"
+celery = "^4.2"
+gevent = "^1.4"
+redis = "^3.0"
 
 [tool.poetry.dev-dependencies]
+flake8 = "*"
+mypy = "*"
+black = { version = "*", allows-prereleases = true }
+isort = "*"
+ipython = "*"
+ipdb = "*"
+pytest = "*"

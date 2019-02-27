@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse, HttpRequest, JsonResponse
 from napalm import get_network_driver
 from netmiko import ConnectHandler
 
-from .models import Device
+from celery.result import AsyncResult
 
+from .models import Device
+from network import tasks
 
 def index(request: HttpRequest) -> HttpResponse:
     devices = Device.objects.all()
@@ -17,8 +19,8 @@ def index(request: HttpRequest) -> HttpResponse:
 
 
 def get_device_stats(request: HttpRequest, device_id) -> HttpResponse:
-    device = Device.objects.get(pk=device_id)
     if request.method == 'GET':
+        device = Device.objects.get(pk=device_id)
         driver = get_network_driver(device.napalm_driver)
         with driver(device.host, device.username, device.password) as device_conn:
             interfaces = device_conn.get_interfaces()
@@ -30,17 +32,15 @@ def get_device_stats(request: HttpRequest, device_id) -> HttpResponse:
     elif request.method == 'POST':
         interface_name = request.POST.get("interface_name")
         enable_interface = request.POST.get("enable")
-        config_commands = [f'interface {interface_name}']
-        if enable_interface == 'False':
-            config_commands.append(' shutdown')
-        else:
-            config_commands.append(' no shutdown')
-        conn_params = {
-            'ip': device.host,
-            'username': device.username,
-            'password': device.password,
-            'device_type': device.netmiko_device_type,
-        }
-        with ConnectHandler(**conn_params) as device_conn:
-            device_conn.send_config_set(config_commands)
-        return redirect(f'/device/{device.id}')
+        task_id = tasks.switch_interface.delay(device_id, interface_name, enable_interface).id
+        return HttpResponse(f"<p>Interface {interface_name} is being switched [task id: {task_id}] </p><p><a href=\"/device/{device_id}\">Go to device interfaces page</a></p>")
+
+
+def get_task_status(request: HttpRequest, task_id: str) -> JsonResponse:
+    task = AsyncResult(task_id)
+    data = {
+        "id": task_id,
+        "status": task.state,
+        "result": task.result
+    }
+    return JsonResponse(data)

@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    image: netprog-stream-django:dev
+    container_name: django
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./log:/log
+      - ./netprog_stream:/app/netprog_stream
+
+  redis:
+    image: redis:4-alpine
+    restart: on-failure
+    container_name: redis
+    sysctls:
+      net.core.somaxconn: '511'
+    volumes:
+      - ./data:/data
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    container_name: celery
+    image: netprog-stream-django:dev
+    command: >-
+      poetry run celery worker
+      -A netprog_stream
+      --loglevel=info --pool=gevent --concurrency=15
+    volumes:
+      - ./log:/log
+      - ./netprog_stream:/app/netprog_stream
+    depends_on:
+      - redis
