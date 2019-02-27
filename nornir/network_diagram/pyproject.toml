@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "network-diagram"
+version = "0.1.0"
+description = ""
+authors = ["Dmitry Figol <git@dmfigol.me>"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+nornir = "^2.0"
+requests = "^2.21"
+networkx = "^2.2"
+matplotlib = "^3.0"
+colorama = "^0.4.1"
+
+[tool.poetry.dev-dependencies]
+ipython = "^7.3"
+ipdb = "^0.11.0"
+black = { version = "*", allows-prereleases = true }
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

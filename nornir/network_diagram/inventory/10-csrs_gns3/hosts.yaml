@@ -1,0 +1,74 @@
+R1:
+  hostname: 192.168.122.101
+  groups:
+    - Miami
+  data:
+    tags:
+      - isr4400
+R2:
+  hostname: 192.168.122.102
+  groups:
+    - Miami
+  data:
+    tags:
+      - isr4300
+R3:
+  hostname: 192.168.122.103
+  groups:
+    - Miami
+  data:
+    tags:
+      - isr4400
+      - edge
+R4:
+  hostname: 192.168.122.104
+  groups:
+    - Miami
+  data:
+    tags:
+      - isr4300
+R5:
+  hostname: 192.168.122.105
+  groups:
+    - Miami
+  data:
+    tags:
+      - isr4400
+      - edge
+R6:
+  hostname: 192.168.122.106
+  groups:
+    - London
+  data:
+    tags:
+      - isr4300
+      - edge
+R7:
+  hostname: 192.168.122.107
+  groups:
+    - London
+  data:
+    tags:
+      - isr4400
+      - edge
+R8:
+  hostname: 192.168.122.108
+  groups:
+    - London
+  data:
+    tags:
+      - isr4300
+R9:
+  hostname: 192.168.122.109
+  groups:
+    - London
+  data:
+    tags:
+      - isr4400
+R10:
+  hostname: 192.168.122.110
+  groups:
+    - London
+  data:
+    tags:
+      - isr4300

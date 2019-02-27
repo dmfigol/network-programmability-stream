@@ -1,0 +1,11 @@
+---
+core:
+    num_workers: 10
+    raise_on_error: True
+
+inventory:
+    plugin: nornir.plugins.inventory.simple.SimpleInventory
+    options:
+        host_file: "inventory/10-csrs_gns3/hosts.yaml"
+        group_file: "inventory/10-csrs_gns3/groups.yaml"
+        defaults_file: "inventory/10-csrs_gns3/defaults.yaml"
