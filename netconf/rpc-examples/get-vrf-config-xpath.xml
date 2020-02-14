@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"
+ message-id="101">
+    <get-config>
+        <source>
+        <running/>
+        </source>
+        <filter xmlns:ios="http://cisco.com/ns/yang/Cisco-IOS-XE-native"
+                type="xpath"
+                select="/ios:native/vrf"/>
+    </get-config>
+</rpc>]]>]]>

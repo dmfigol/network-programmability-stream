@@ -81,6 +81,7 @@ celerybeat-schedule
 
 # dotenv
 .env
+.envrc
 
 # virtualenv
 .venv*
@@ -103,3 +104,4 @@ ENV/
 tmp/
 .DS_Store
 *.sqlite3
+.vscode
