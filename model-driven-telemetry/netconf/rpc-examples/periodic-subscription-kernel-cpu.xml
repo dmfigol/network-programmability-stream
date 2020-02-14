@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rpc message-id="101" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <establish-subscription
+        xmlns="urn:ietf:params:xml:ns:yang:ietf-event-notifications"
+        xmlns:yp="urn:ietf:params:xml:ns:yang:ietf-yang-push">
+        <stream>yp:yang-push</stream>
+        <yp:xpath-filter>/platform-sw-ios-xe-oper:cisco-platform-software/control-processes/control-process[fru='fru-rp'][slot='0'][bay='0'][chassis='-1']/per-core-stats/per-core-stat[name='1']</yp:xpath-filter>
+        <yp:period>1000</yp:period>
+    </establish-subscription>
+</rpc>]]>]]>

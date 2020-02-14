@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rpc message-id="101" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <establish-subscription xmlns="urn:ietf:params:xml:ns:yang:ietf-event-notifications"
+    xmlns:yp="urn:ietf:params:xml:ns:yang:ietf-yang-push">
+        <stream>yp:yang-push</stream>
+        <yp:xpath-filter>/cdp-ios-xe-oper:cdp-neighbor-details/cdp-neighbor-detail</yp:xpath-filter>
+        <yp:dampening-period>0</yp:dampening-period>
+    </establish-subscription>
+</rpc>]]>]]>
+

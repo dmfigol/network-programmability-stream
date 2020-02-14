@@ -1,0 +1,62 @@
+version: "3.7"
+services:
+  influxdb:
+    image: influxdb:1.7-alpine
+    ports:
+      - "8086:8086"  # HTTP API port
+      - "8083:8083"  # Administrator
+    volumes:
+      - influx-storage:/var/lib/influxdb
+
+  telegraf:
+    image: telegraf:1.13-alpine
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    ports:
+      - "57555:57555"
+    depends_on:
+      - influxdb
+
+  # grafana has more data sources
+  grafana:
+    image: grafana/grafana:6.5.0
+    ports:
+      - "3000:3000"
+    user: "104"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    depends_on:
+      - influxdb
+
+  # chronograf is similar to grafana, but supports only influxdb
+  # and provides some administration options for the whole stack
+  # select which one you prefer (or try both)
+  chronograf:
+    image: chronograf:1.7-alpine
+    ports:
+      - "8888:8888"
+    volumes:
+      - chronograf-storage:/var/lib/chronograf
+    depends_on:
+      - influxdb
+    command: ["--influxdb-url=http://influxdb:8086"]
+
+  # usually if you are using chronograf, you would also want to
+  # use kapacitor - TICK (Telegraf + InfluxDB + Chronograf + Kapacitor) vs
+  # TIG (Telegraf + InfluxDB + Grafana)
+  kapacitor:
+    image: kapacitor:1.5-alpine
+    ports:
+      - "9092:9092"
+    volumes:
+      - kapacitor-storage:/var/lib/kapacitor
+    depends_on:
+      - influxdb
+    environment:
+      - KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086
+
+volumes:
+  grafana-storage:
+  influx-storage:
+  chronograf-storage:
+  kapacitor-storage:
