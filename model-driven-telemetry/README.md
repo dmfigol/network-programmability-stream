@@ -86,8 +86,8 @@ ssh cisco@192.168.153.101 -p 830 -s netconf
 
 #### Streams
 So far I had two streams about telemetry:
-* Streaming Telemetry NETCONF dial-in: https://youtu.be/E_em9yiIUeU
-* Streaming Telemetry gRPC dial-out: https://youtu.be/SxUzY_hD0iM
+* Model-Driven Telemetry NETCONF dial-in: https://youtu.be/E_em9yiIUeU
+* Model-Driven  Telemetry gRPC dial-out: https://youtu.be/SxUzY_hD0iM
 
 
 #### Resources
@@ -96,3 +96,4 @@ So far I had two streams about telemetry:
 * DevNet Telemetry Sandbox: https://devnetsandbox.cisco.com/RM/Diagram/Index/0e053963-b039-4a15-94f6-54db2f5ad61c?diagramType=Topology
 * DevNet Model-Driven Telemetry learning lab: https://developer.cisco.com/learning/modules/iosxe_telemetry
 * Streaming Telemetry with Google protocol buffers (blog): https://blogs.cisco.com/sp/streaming-telemetry-with-google-protocol-buffers
+* Getting Started with Modern Time Series Database and Grafana by Damien Garros (conference talk): https://www.youtube.com/watch?v=lzppzWGRHGo
