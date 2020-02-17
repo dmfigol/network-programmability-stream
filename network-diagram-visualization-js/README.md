@@ -31,6 +31,14 @@ I've been using node.js v13.8.0 (installed using [nvm](https://github.com/nvm-sh
 4) Change different options (consult `vis-network` [docs](https://visjs.github.io/vis-network/docs/network/)) or add nodes/edges  in `src/components/NetworkDiagram.vue` and see how the diagram is changing (sometimes you need to do `yarn serve` to re-trigger the build)
 5) To build a static website which can be served using a web server (e.g. `nginx`), use `yarn build`. The resulting static website will be in `dist/` folder.
 
-
 ## Streams
-* Visualizing a network diagram with JavaScript | stream 2020/02/16: [https://youtu.be/JOcWC9PPjSQ](https://youtu.be/JOcWC9PPjSQ)
+* **Visualizing a network diagram with JavaScript | stream 2020/02/16**: [https://youtu.be/JOcWC9PPjSQ](https://youtu.be/JOcWC9PPjSQ)
+
+## Resources
+* [Vue.js](https://vuejs.org/)
+* [vue-cli](https://cli.vuejs.org/) - an easy way to bootstrap the Vue.js project
+* [vis-network](https://visjs.github.io/vis-network/docs/network/) - part of visjs
+* [vue-visjs](https://github.com/sjmallon/vue-visjs) - a working wrapper around visjs
+* [d3-force](https://github.com/d3/d3-force)
+* [drawthenet](https://github.com/cidrblock/drawthe.net), demo: http://go.drawthe.net/
+* [lnetd](https://github.com/cpmarvin/lnetd), demo: http://demo.lnetd.co.uk/home/index
