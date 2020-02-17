@@ -32,5 +32,5 @@ I've been using node.js v13.8.0 (installed using [nvm](https://github.com/nvm-sh
 5) To build a static website which can be served using a web server (e.g. `nginx`), use `yarn build`. The resulting static website will be in `dist/` folder.
 
 
-### Streams
+## Streams
 * Visualizing a network diagram with JavaScript | stream 2020/02/16: [https://youtu.be/JOcWC9PPjSQ](https://youtu.be/JOcWC9PPjSQ)
