@@ -1,0 +1,13 @@
+{
+    "id": "Y2lzY29zcGFyazovL3VzL01FU1NBR0UvZTdlNjAxZDAtNWZjOC0xMWVhLWJlYTgtOTE3NDQwYTgwZDhh",
+    "roomId": "Y2lzY29zcGFyazovL3VzL1JPT00vNDJkYWNiODAtMjEyMi0xMWU4LThiMjMtNGZmOThhYjM4OWY2",
+    "roomType": "group",
+    "text": "@Overwatch hi",
+    "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS9mNzI4OTVjYy00MzI3LTQwNGItYTlmOS1lODNiZDBhNzA2YTk",
+    "personEmail": "test@example.com",
+    "html": "<div><spark-mention data-object-type=\"person\" data-object-id=\"Y2lzY29zcGFyazovL3VzL1BFT1BMRS83Y2E1MWJmYy1lNjhlLTRiNmQtYWEzZi1kNmZkNzkyNjZkODY\">Overwatch</spark-mention> hi</div>",
+    "mentionedPeople": [
+        "Y2lzY29zcGFyazovL3VzL1BFT1BMRS83Y2E1MWJmYy1lNjhlLTRiNmQtYWEzZi1kNmZkNzkyNjZkODY"
+    ],
+    "created": "2020-03-06T16:38:27.693Z"
+}

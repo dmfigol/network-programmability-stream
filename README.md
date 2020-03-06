@@ -9,5 +9,6 @@ I am also a heavy user of [poetry](https://python-poetry.org) - tool for managin
 
 Note: Currently the repo files undergo a **major** overhaul.
 ### Reworked folders
-* **model-driven-telemetry** - contains technology notes and supporting files for a project "Model-Driven Telemetry" including gRPC dial-out telemetry and NETCONF dial-in telemetry
-* **network-diagram-visualization-js** - contains notes and supporting files for a project "Visualization of a network diagram using JavaScript" 
+* **model-driven-telemetry** - a project "Model-Driven Telemetry" including gRPC dial-out telemetry and NETCONF dial-in telemetry
+* **network-diagram-visualization-js** - a project "Visualization of a network diagram using JavaScript" 
+* **chatops-webex-teams** - a project "Webex Teams bot for network automation | ChatOps "
