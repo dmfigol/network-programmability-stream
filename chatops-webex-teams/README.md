@@ -50,6 +50,8 @@ Content:
 5. Run the web app: `uvicorn network_overwatch.app:app --port 3000 --reload`
 6. Check the bot operation by sending a message `vrf <device-name>` in a private chat or a group chat (@&lt;bot-name&gt; in that case), e.g. `vrf r1`. After a short delay, you will see a response with VRFs configured on that device.
 
+![ChatOps with Webex Teams](chatops-vrf.png)
+
 ## Stream recording
 * ChatOps with Webex Team bot: https://youtu.be/5qMNMSVr2OU
 
