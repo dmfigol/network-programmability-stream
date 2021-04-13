@@ -1,8 +1,8 @@
 # scrapli scripts
 This directory contains examples of using different libraries in scrapli family.
 
-## Thoughts on scrapli library family
-## scrapli (core)
+## Thoughts on scrapli libraries
+### scrapli (core)
 [Documentation](https://carlmontanari.github.io/scrapli)  
 [Source Code](https://github.com/carlmontanari/scrapli)  
 [Examples](https://github.com/carlmontanari/scrapli/tree/master/examples)  
@@ -24,7 +24,7 @@ Instead `scrapli` offers several ways to deal with this scenario, check out thes
 
 There is also [scrapli_community](https://scrapli.github.io/scrapli_community/user_guide/project_details/) project, where community members add support for their platforms and there is a section in the docs describing how to [add a platform yourself](https://scrapli.github.io/scrapli_community/user_guide/basic_usage/)
 
-## scrapli-netconf
+### scrapli-netconf
 [Documentation](https://scrapli.github.io/scrapli_netconf)  
 [Source Code](https://github.com/scrapli/scrapli_netconf)  
 [Examples](https://github.com/scrapli/scrapli_netconf/tree/master/examples)  
@@ -36,7 +36,7 @@ There is also [scrapli_community](https://scrapli.github.io/scrapli_community/us
 * great docs
 * type hints which allow IDEs to do better autocompletion magic
 
-## scrapli-cfg
+### scrapli-cfg
 [Documentation](https://scrapli.github.io/scrapli_cfg)  
 [Source Code](https://github.com/scrapli/scrapli_cfg)  
 [Examples](https://github.com/scrapli/scrapli_cfg/tree/master/examples)  
@@ -46,7 +46,7 @@ There is also [scrapli_community](https://scrapli.github.io/scrapli_community/us
 * config operations are possible via Telnet (console via terminal servers - this allows me to replace configs even on devices where I don't have management port connectivity, but I have a console connection)
 * no need in getters, it is already covered by `scrapli` textfsm/ttp/genie support
 
-## scrapli-replay
+### scrapli-replay
 [Documentation](https://scrapli.github.io/scrapli_replay)  
 [Source Code](https://github.com/scrapli/scrapli_replay)  
 [Examples](https://github.com/scrapli/scrapli_replay/tree/main/examples/simple_test_case)  
@@ -65,7 +65,7 @@ async def test_get_devices():
     assert len(response.json()) == len(INVENTORY)
 ```
 
-## nornir-scrapli
+### nornir-scrapli
 [Documentation](https://scrapli.github.io/nornir_scrapli)  
 [Source Code](https://github.com/scrapli/nornir_scrapli)  
 [Examples](https://github.com/scrapli/nornir_scrapli/tree/master/examples)  
