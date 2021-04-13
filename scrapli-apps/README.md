@@ -73,6 +73,7 @@ async def test_get_devices():
 `nornir-scrapli` is a nornir plugin for `scrapli` family: `scrapli (core)`, `scrapli-netconf`, `scrapli-cfg` enabling you to use these libraries as `nornir` tasks. There are no examples of this plugin in the repo, however there are some in my [`nornir-apps` repo](https://github.com/dmfigol/nornir-apps)
 
 ## Repository
+The scripts were tested on **Python 3.9.4**.  
 In the repository you can find the following files:
 * `constants.py` contains details like username, password and a list of devices to connect to
 * `ssh-netmiko.py` collects commands and does a configuration change using netmiko with threads
