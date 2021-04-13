@@ -16,7 +16,7 @@ This directory contains examples of using different libraries in scrapli family.
 * type hints which allow IDEs to do better autocompletion magic
 * easy to add support for another platform
 
-The only complaint I have seen towards `scrapli` was that it "supports" a low number of network operating systems and e.g. `netmiko` supports more. And I personally think it is not a bad thing. There are so many different network operating systems and once an author adds support for them to the core of the library, they are ultimate responsible for maintaining it and it is miserable experience - github issues become populated with bugs related to platforms, instead bugs/feature requests for the core itself, they would be spending time stressing out how to get that platform image and how to test it. It is not sustainable.  
+The only complaint I have seen towards `scrapli` was that it "supports" a low number of network operating systems and e.g. `netmiko` supports more. And I personally think it is not a bad thing. There are so many different network operating systems and once an author adds support for them to the core of the library, they are ultimate responsible for maintaining it and it is hard - github issues become populated with bugs related to platforms, instead bugs/feature requests related to the core itself, maintainers would be spending time stressing out how to get that platform image and how to test it. I think it is not sustainable. It is quite similar to `nornir 3` dropping plugins from the core - it is just too hard to maintain.  
 Instead `scrapli` offers several ways to deal with this scenario, check out these sections in the docs:
 * [Supported Platforms](https://carlmontanari.github.io/scrapli/user_guide/project_details/#supported-platforms)
 * [Using Driver](https://carlmontanari.github.io/scrapli/user_guide/advanced_usage/#using-driver-directly)
@@ -52,16 +52,16 @@ There is also [scrapli_community](https://scrapli.github.io/scrapli_community/us
 [Source Code](https://github.com/scrapli/scrapli_replay)  
 [Examples](https://github.com/scrapli/scrapli_replay/tree/main/examples/simple_test_case)  
 
-Have you ever tried testing your network automation application in CI/CD? You probably don't have or don't want to have CI/CD pipeline do changes on your devices. So instead of actually connecting to network devices in your tests, you could use something like `monkeypatch` / `mock`, but it requires a decent amount of effort and looks ugly. This problem was first addressed for testing external HTTP APIs - by [vcrpy](https://github.com/kevin1024/vcrpy) project. The idea is that on tests marked with a specific marker, whenever that test invokes HTTP request(s), the library would save "cassettes" - YAML files containing request/response chain. Then, for subsequent calls to your test, the library would look up the response for a specific request in a YAML file, instead of doing a real HTTP request. By saving those cassettes to the repo, anyone or anything, including CI/CD, could test your app easily without actually talking to an external service.  
-Now imagine this, but for SSH. This is exactly what `scrapli-replay` is. It saves SSH interactions to YAML cassettes and replays them later on subsequent calls.  
-Personally, I think it is a big help in the world of network automation applications, as this greatly simplifies the testing of network automation applications. It really has no competitor, so here is an [example test](https://github.com/dmfigol/netwarden/blob/master/backend/tests/routers/test_devices.py) from my other project - [Network controller NetWarden](https://github.com/dmfigol/netwarden), where my network automation is powered by a web framework:
+Have you ever tried testing your network automation application in CI/CD? You probably don't have or don't want to have CI/CD pipeline do changes on your devices. So instead of actually connecting to network devices in your tests, you could use something like `monkeypatch` / `mock`, but it requires a decent amount of effort and looks ugly. One elegant solution to this problem for testing external HTTP APIs was proposed by [vcrpy](https://github.com/kevin1024/vcrpy) project. The idea is that on tests marked with a specific marker, whenever that test invokes HTTP request(s), the library would save "cassettes" - YAML files containing request/response chain. Then, for subsequent test runs, the library would look up the response for a specific request in a YAML file, instead of doing a real HTTP request. By saving those cassettes to the repo, anyone or anything, including CI/CD, could test your app easily without actually talking to an external service.  
+Now imagine this, but for SSH. This is exactly what `scrapli-replay` does. It saves SSH interactions to YAML cassettes and replays them later on subsequent calls.  
+Personally, I think it is a big deal, as it greatly simplifies the testing of network automation applications. Here is an [example test](https://github.com/dmfigol/netwarden/blob/master/backend/tests/routers/test_devices.py) from my other project - [Network controller NetWarden](https://github.com/dmfigol/netwarden), where my network automation is powered by a web framework:
 ```python
 @pytest.mark.asyncio
-@pytest.mark.scrapli_replay
+@pytest.mark.scrapli_replay  # this will save output from show commands to a cassette
 async def test_get_devices():
     async with AsyncClient(app=app, base_url="http://test") as client:
         response = await client.get("/api/devices")
-        # /api/devices collect a show command from 10 network devices using scrapli
+        # /api/devices collects a show command from 10 network devices using scrapli
     assert response.status_code == 200
     assert len(response.json()) == len(INVENTORY)
 ```
