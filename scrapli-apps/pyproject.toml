@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "scrapli-apps"
+version = "0.1.0"
+description = ""
+authors = ["Dmitry Figol <git@dmfigol.me>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+scrapli = {extras = ["ssh2", "textfsm", "paramiko", "genie", "asyncssh"], version = "*", allow-prereleases = true }
+netmiko = "^3"
+scrapli-netconf =  { version = "*", allow-prereleases = true }
+scrapli-cfg =  { git = "https://github.com/scrapli/scrapli_cfg.git", branch = "main", allow-prereleases = true }
+uvloop = "*"
+aiofiles = "*"
+ncclient = "*"
+"ruamel.yaml" = "*"
+genie = "^21.3"
+pyats = "^21.3"
+
+[tool.poetry.dev-dependencies]
+bpython = "*"
+pdbpp = "*"
+flake8 = "*"
+black = { version = "*", allow-prereleases = true }
+pytest-asyncio = "*"
+pytest = "*"
+scrapli-replay =  { git = "https://github.com/scrapli/scrapli_replay.git", branch = "main", allow-prereleases = true }
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

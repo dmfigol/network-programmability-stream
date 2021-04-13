@@ -1,0 +1,37 @@
+native:
+  _xmlns: http://cisco.com/ns/yang/Cisco-IOS-XE-native
+  vrf:
+    _operation: replace
+    definition:
+      - name: Mgmt-vrf
+        address-family:
+          ipv4: null
+          ipv6: null
+      - name: SCRAPLI
+        address-family:
+          ipv4: null
+          ipv6: null
+  ip:
+    access-list:
+      _operation: replace
+      extended:
+        - name: TEST
+          _xmlns: http://cisco.com/ns/yang/Cisco-IOS-XE-acl
+          access-list-seq-rule:
+            - sequence: 10
+              ace-rule:
+                action: permit
+                protocol: ip
+                any: null
+                ipv4-address: 192.168.1.0
+                mask: 0.0.0.255
+                dst-any: null
+        - name: RANDOM
+          _xmlns: http://cisco.com/ns/yang/Cisco-IOS-XE-acl
+          access-list-seq-rule:
+            - sequence: 10
+              ace-rule:
+                action: deny
+                protocol: ip
+                any: null
+                dst-host: 1.2.3.4

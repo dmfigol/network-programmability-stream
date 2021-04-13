@@ -1,0 +1,42 @@
+192.168.152.101:22:AsyncsshTransport::0:
+  connection_profile:
+    host: 192.168.152.101
+    port: 22
+    auth_username: cisco
+    auth_password: true
+    auth_private_key: ''
+    auth_private_key_passphrase: false
+    auth_bypass: false
+    transport: asyncssh
+    auth_secondary: false
+  interactions:
+    - channel_output: ''
+      expected_channel_input: "\n"
+      expected_channel_input_redacted: false
+    - channel_output: "Configured by scrapli-cfg4 NEW\n\nR1#"
+      expected_channel_input: terminal length 0
+      expected_channel_input_redacted: false
+    - channel_output: "\nR1#terminal length 0"
+      expected_channel_input: "\n"
+      expected_channel_input_redacted: false
+    - channel_output: "\nR1#"
+      expected_channel_input: terminal width 512
+      expected_channel_input_redacted: false
+    - channel_output: terminal width 512
+      expected_channel_input: "\n"
+      expected_channel_input_redacted: false
+    - channel_output: "\nR1#"
+      expected_channel_input: show license udi
+      expected_channel_input_redacted: false
+    - channel_output: show license udi
+      expected_channel_input: "\n"
+      expected_channel_input_redacted: false
+    - channel_output: "\nUDI: PID:CSR1000V,SN:9228HT2B0FV\n\n\nR1#"
+      expected_channel_input: "\n"
+      expected_channel_input_redacted: false
+    - channel_output: "\nR1#"
+      expected_channel_input: exit
+      expected_channel_input_redacted: false
+    - channel_output: ''
+      expected_channel_input: "\n"
+      expected_channel_input_redacted: false
