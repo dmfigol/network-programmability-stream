@@ -44,6 +44,7 @@ There is also [scrapli_community](https://scrapli.github.io/scrapli_community/us
 `scrapli-cfg` is a library which provides different config operations (e.g. config replace, diff, save/commit) similar to [`napalm`](https://github.com/napalm-automation/napalm). It is built on top of `scrapli` and supports several "core" platforms: Cisco IOS-XE/XR/NX-OS, Arista EOS, Juniper Junos. It is possible to add your own platform, but it might be more complex than adding a platform to `scrapli`. `scrapli-cfg` can also do config operations over telnet (think of console via terminal servers) and uses only SSH or Telnet for all operations (no extra dependencies like pyez, pyeapi, etc). It also has a partial config replacement to leave some config sections untouched. Here are the reasons I am using `scrapli-cfg` instead of `napalm`:
 * asyncio support (sync/async have the same interface)
 * config operations are possible via Telnet (console via terminal servers - this allows me to replace configs even on devices where I don't have management port connectivity, but I have a console connection)
+* partial config replacement if I want to manage only some parts of the config, not all features at once
 * no need in getters, it is already covered by `scrapli` textfsm/ttp/genie support
 
 ### scrapli-replay
