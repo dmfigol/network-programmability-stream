@@ -1,0 +1,18 @@
+username: cisco
+password: cisco
+platform: cisco_iosxe
+connection_options:
+  scrapli:
+    # platform: cisco_iosxe
+    extras:
+      transport: ssh2
+      # ssh_config_file: True
+      auth_strict_key: False
+  scrapli_netconf:
+    # platform: cisco_iosxe
+    extras:
+      transport: ssh2
+      # ssh_config_file: True
+      auth_strict_key: False
+# data:
+#   tests: {}

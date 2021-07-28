@@ -1,0 +1,73 @@
+R1:
+  hostname: 192.168.152.101
+  groups:
+    - Miami
+  data:
+    tags:
+      - csr1000v
+R2:
+  hostname: 192.168.152.102
+  groups:
+    - Miami
+  data:
+    tags:
+      - csr1000v
+R3:
+  hostname: 192.168.152.103
+  groups:
+    - Miami
+  data:
+    tags:
+      - csr1000v
+R4:
+  hostname: 192.168.152.104
+  groups:
+    - Miami
+  data:
+    tags:
+      - csr1000v
+R5:
+  hostname: 192.168.152.105
+  groups:
+    - Miami
+  data:
+    tags:
+      - csr1000v
+      - edge
+R6:
+  hostname: 192.168.152.106
+  groups:
+    - London
+  data:
+    tags:
+      - csr1000v
+      - edge
+R7:
+  hostname: 192.168.152.107
+  groups:
+    - London
+  data:
+    tags:
+      - csr1000v
+      - edge
+R8:
+  hostname: 192.168.152.108
+  groups:
+    - London
+  data:
+    tags:
+      - csr1000v
+R9:
+  hostname: 192.168.152.109
+  groups:
+    - London
+  data:
+    tags:
+      - csr1000v
+R10:
+  hostname: 192.168.152.110
+  groups:
+    - London
+  data:
+    tags:
+      - csr1000v

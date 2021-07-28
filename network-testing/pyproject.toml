@@ -1,0 +1,54 @@
+[tool.poetry]
+name = "network-testing"
+version = "0.1.0"
+description = "Network testing with pytest"
+authors = ["Dmitry Figol <git@dmfigol.me>"]
+
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+nornir = "^3"
+scrapli = {extras = ["ssh2", "textfsm", "genie"], version = "*", allow-prereleases = true }
+scrapli-netconf =  { version = "*", allow-prereleases = true }
+scrapli-cfg =  { git = "https://github.com/scrapli/scrapli_cfg.git", branch = "main", allow-prereleases = true }
+nornir-scrapli = { git = "https://github.com/scrapli/nornir_scrapli", branch = "develop"}
+genie = "21.6"
+pyats = "21.6"
+
+[tool.poetry.dev-dependencies]
+bpython = "*"
+mypy = "*"
+flake8 = "*"
+flake8-bugbear = "*"
+pdbpp = "*"
+black = "*"
+isort = "*"
+types-setuptools = "*"
+pytest = "*"
+pytest-html = "*"
+pytest-html-reporter = "*"
+pytest-helpers-namespace = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+python_version = "3.6"
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_untyped_calls = true
+ignore_errors = false
+ignore_missing_imports = true
+strict_optional = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_return_any = true
+warn_no_return = true
+warn_unreachable = true
+
+[tool.pytest.ini_options]
+addopts = "-p no:warnings"
+norecursedirs= "tests/helpers"

@@ -1,0 +1,13 @@
+{
+    "vrf": {
+        "Mgmt-vrf": {
+            "protocols": [
+                "ipv4",
+                "ipv6"
+            ],
+            "interfaces": [
+                "GigabitEthernet1"
+            ]
+        }
+    }
+}
